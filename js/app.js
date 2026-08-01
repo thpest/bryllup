@@ -6,7 +6,7 @@
 
 const app = document.getElementById("app");
 
-const DATA = { gjester: null, meny: null, program: null };
+const DATA = { gjester: null, meny: null, program: null, smalltalk: null };
 
 /* ---------- Hjelpere ---------- */
 function el(html) {
@@ -33,14 +33,16 @@ async function hentJSON(sti) {
 /* ---------- Oppstart ---------- */
 async function start() {
   try {
-    const [gjester, meny, program] = await Promise.all([
+    const [gjester, meny, program, smalltalk] = await Promise.all([
       hentJSON("data/gjester.json"),
       hentJSON("data/meny.json").catch(() => null),
       hentJSON("data/program.json").catch(() => null),
+      hentJSON("data/smalltalk.json").catch(() => null),
     ]);
     DATA.gjester = gjester;
     DATA.meny = meny;
     DATA.program = program;
+    DATA.smalltalk = smalltalk;
     document.title = "Bryllup · " + (gjester.bryllup?.par || "");
     window.addEventListener("hashchange", ruter);
     ruter();
@@ -63,6 +65,7 @@ function ruter() {
   else if (h === "meny") visMeny();
   else if (h === "program") visProgram();
   else if (h === "bilder") visBilder();
+  else if (h === "smalltalk") visSmalltalk();
   else visForside();
   app.classList.add("fade-inn");
   window.scrollTo(0, 0);
@@ -99,6 +102,9 @@ function visForside() {
   ];
   if (b.bilderUrl) {
     punkter.push({ hash: "bilder", ikon: "📷", tittel: "Bilder", under: "Se og del bilder fra dagen" });
+  }
+  if (DATA.smalltalk?.sporsmal?.length) {
+    punkter.push({ hash: "smalltalk", ikon: "💬", tittel: "Smalltalk", under: "Bryt isen med sidemannen" });
   }
   for (const p of punkter) {
     const a = el(`<a class="stor-knapp" href="#/${p.hash}">
@@ -395,6 +401,61 @@ function visBilder() {
        med en Google-konto – alle med lenken kan se bildene.</p>
   </div>`);
   app.append(kort);
+}
+
+/* ---------- Smalltalk ---------- */
+let smalltalkPose = [];   // "pose" vi trekker fra – tømmes før den fylles på nytt
+let sisteSpm = null;
+
+function stokk(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function nesteSmalltalk() {
+  const alle = DATA.smalltalk?.sporsmal || [];
+  if (alle.length === 0) return "";
+  if (alle.length === 1) return alle[0];
+  if (smalltalkPose.length === 0) {
+    smalltalkPose = stokk(alle);
+    // unngå at det første vi trekker er identisk med forrige viste
+    if (smalltalkPose[smalltalkPose.length - 1] === sisteSpm) {
+      [smalltalkPose[0], smalltalkPose[smalltalkPose.length - 1]] =
+        [smalltalkPose[smalltalkPose.length - 1], smalltalkPose[0]];
+    }
+  }
+  sisteSpm = smalltalkPose.pop();
+  return sisteSpm;
+}
+
+function visSmalltalk() {
+  app.innerHTML = "";
+  app.append(topplinje("Smalltalk"));
+  const alle = DATA.smalltalk?.sporsmal || [];
+  if (!alle.length) {
+    app.append(el(`<div class="beskjed">Kommer snart …</div>`));
+    return;
+  }
+  app.append(el(`<div class="seksjon-topp"><p class="under">${esc(DATA.smalltalk.undertittel || "Bryt isen – spør sidemannen!")}</p></div>`));
+  const kort = el(`<div class="smalltalk-kort">
+    <div class="st-emoji">💬</div>
+    <p class="st-spm" id="st-spm"></p>
+    <button class="neste-knapp" id="st-neste">Ny setning →</button>
+  </div>`);
+  app.append(kort);
+  const spmEl = kort.querySelector("#st-spm");
+  const vis = () => {
+    spmEl.textContent = nesteSmalltalk();
+    spmEl.classList.remove("fade-inn");
+    void spmEl.offsetWidth;
+    spmEl.classList.add("fade-inn");
+  };
+  kort.querySelector("#st-neste").addEventListener("click", vis);
+  vis();
 }
 
 start();
