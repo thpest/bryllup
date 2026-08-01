@@ -62,6 +62,7 @@ function ruter() {
   if (h === "plass") visBordkart();
   else if (h === "meny") visMeny();
   else if (h === "program") visProgram();
+  else if (h === "bilder") visBilder();
   else visForside();
   app.classList.add("fade-inn");
   window.scrollTo(0, 0);
@@ -96,6 +97,9 @@ function visForside() {
     { hash: "meny", ikon: "🍽️", tittel: "Meny", under: "Hva serveres i dag" },
     { hash: "program", ikon: "🎶", tittel: "Program", under: "Slik blir dagen" },
   ];
+  if (b.bilderUrl) {
+    punkter.push({ hash: "bilder", ikon: "📷", tittel: "Bilder", under: "Se og del bilder fra dagen" });
+  }
   for (const p of punkter) {
     const a = el(`<a class="stor-knapp" href="#/${p.hash}">
       <span class="ikon">${p.ikon}</span>
@@ -370,6 +374,27 @@ function visProgram() {
     linje.append(post);
   }
   app.append(linje);
+}
+
+/* ---------- Bilder ---------- */
+function visBilder() {
+  app.innerHTML = "";
+  app.append(topplinje("Bilder"));
+  const url = DATA.gjester.bryllup?.bilderUrl;
+  if (!url) {
+    app.append(el(`<div class="beskjed">Fotoalbumet er ikke klart ennå.</div>`));
+    return;
+  }
+  app.append(el(`<div class="seksjon-topp"><p class="under">Del minnene fra dagen</p></div>`));
+  const kort = el(`<div class="bilder-kort">
+    <div class="bilder-ikon">📷</div>
+    <p>Ta del i minnene! Åpne vårt felles fotoalbum for å <b>se bildene</b> som deles –
+       og gjerne <b>legg til dine egne</b>.</p>
+    <a class="album-knapp" href="${esc(url)}" target="_blank" rel="noopener noreferrer">Åpne fotoalbumet</a>
+    <p class="liten">Albumet åpnes i Google Foto. For å laste opp bilder må du være innlogget
+       med en Google-konto – alle med lenken kan se bildene.</p>
+  </div>`);
+  app.append(kort);
 }
 
 start();

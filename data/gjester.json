@@ -2,7 +2,8 @@
   "bryllup": {
     "par": "Julie & Endre",
     "dato": "15. august 2026",
-    "hilsen": "Velkommen til feiring!"
+    "hilsen": "Velkommen til feiring!",
+    "bilderUrl": "https://photos.google.com/share/AF1QipNV5mkBwotKZ8-XSeC5paGjq8tsmBY_xBfPu8C394YWo4hVYZl1eEQVs6TMHbvkGw?key=TU9zR3RZZHAtRGN1ck1uakFldk9WNU92OEJaTGpn"
   },
   "bord": [
     {
@@ -40,7 +41,7 @@
           "Jonathan",
           "Henriette",
           "Sara",
-          "Anders",
+          "Anders N.",
           "Mattis"
         ],
         "B": [
@@ -51,9 +52,9 @@
           "Håkon",
           "Agnes",
           "Martine",
-          "Christopher",
+          "Christopher S.",
           "Hanne",
-          "Christopher",
+          "Christopher L.",
           "Emmeli",
           "Caroline"
         ]
@@ -110,7 +111,7 @@
           "Marthe",
           "Ari",
           "Peter",
-          "Andreas"
+          "Andreas N. S."
         ]
       }
     }

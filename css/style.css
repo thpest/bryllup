@@ -412,6 +412,43 @@ body {
 }
 .post .p-besk { color: var(--navy-myk); font-size: 0.93rem; margin-top: 2px; }
 
+/* ---------- Bilder ---------- */
+.bilder-kort {
+  background: var(--duk);
+  border-radius: var(--radius);
+  box-shadow: var(--skygge);
+  padding: 26px 22px 24px;
+  text-align: center;
+}
+.bilder-kort .bilder-ikon {
+  font-size: 44px;
+  width: 76px; height: 76px;
+  margin: 0 auto 8px;
+  border-radius: 22px;
+  background: linear-gradient(135deg, #eaf3fb, #d6e8f7);
+  display: grid; place-items: center;
+}
+.bilder-kort p { color: var(--navy); margin: 10px auto; max-width: 26em; }
+.bilder-kort .liten { color: var(--navy-myk); font-size: 0.86rem; }
+.album-knapp {
+  display: inline-block;
+  margin: 12px 0 6px;
+  text-decoration: none;
+  background: linear-gradient(135deg, #6aa9d9, #3f6f96);
+  color: #fff;
+  font-family: var(--serif);
+  font-size: 1.35rem;
+  font-weight: 600;
+  padding: 13px 30px;
+  border-radius: 999px;
+  box-shadow: var(--skygge);
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.album-knapp:active { transform: translateY(1px) scale(0.99); }
+@media (hover: hover) {
+  .album-knapp:hover { transform: translateY(-2px); box-shadow: var(--skygge-loft); }
+}
+
 /* ---------- Feil / laster ---------- */
 .beskjed {
   background: var(--duk);

@@ -25,6 +25,7 @@ BRYLLUP = {
     "par": "Julie & Endre",          # <-- BEKREFT/ENDRE brudeparets navn
     "dato": "15. august 2026",
     "hilsen": "Velkommen til feiring!",
+    "bilderUrl": "https://photos.google.com/share/AF1QipNV5mkBwotKZ8-XSeC5paGjq8tsmBY_xBfPu8C394YWo4hVYZl1eEQVs6TMHbvkGw?key=TU9zR3RZZHAtRGN1ck1uakFldk9WNU92OEJaTGpn",
 }
 # ---------------------------------------------------------------------------
 

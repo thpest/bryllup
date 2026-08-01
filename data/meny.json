@@ -11,10 +11,10 @@
     },
     {
       "type": "Forrett",
-      "navn": "Skagen toast",
-      "beskrivelse": "Skagen toast med et utvalg av skalldyr og sesongens beste grønnsaker, servert på smørstekt toast. Toppes med lakserogn og rotchips.",
+      "navn": "Aspargessalat fra Østra",
+      "beskrivelse": "Aspargessalat med ovnsbakt kvitlin fra Ørsta med honning og valnøtter. Toppes med eplemarmelade og sprøstekt coppaskinke",
       "allergener": "",
-      "ikon": "🦐"
+      "ikon": "🥗"
     },
     {
       "type": "Hovedrett",
