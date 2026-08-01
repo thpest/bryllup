@@ -578,6 +578,7 @@ function plassEl(navn, bord, rad, i) {
   p.dataset.rad = rad;
   p.dataset.i = i;
   p.dataset.navn = navn;
+  if (DATA.bjornolav?.bordkort && navn === DATA.bjornolav.bordkort) p.classList.add("blink");
   return p;
 }
 function tomEl() {
