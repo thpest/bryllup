@@ -1,0 +1,6 @@
+# Behandle binærfiler som binære (unngå ødelagte linjeskift ved utsjekking)
+*.pdf binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.ico binary
