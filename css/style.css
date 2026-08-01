@@ -597,6 +597,151 @@ body {
   max-width: 22em;
 }
 
+/* ---------- Kveldsmodus ---------- */
+.kveld-knapp.laast { opacity: 0.72; }
+.kveld-knapp.laast .ikon { background: #eef1f4; }
+.kveld-knapp.aapen {
+  border-color: var(--gull);
+  background: linear-gradient(135deg, #ffffff, #fffdf7);
+}
+.kveld-knapp.aapen .ikon { background: linear-gradient(135deg, #f4ecd6, #e7dcc4); }
+.nytt-merke {
+  display: inline-block;
+  vertical-align: middle;
+  background: var(--gull);
+  color: #fff;
+  font-family: var(--sans);
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: 999px;
+  margin-left: 6px;
+  animation: pulsMerke 1.4s ease-in-out infinite;
+}
+@keyframes pulsMerke {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.12); }
+}
+.kveld-banner {
+  margin-top: 16px;
+  background: linear-gradient(135deg, #6aa9d9, #3f6f96);
+  color: #fff;
+  border-radius: var(--radius);
+  padding: 14px 18px;
+  text-align: center;
+  font-size: 0.95rem;
+  box-shadow: var(--skygge);
+  cursor: pointer;
+  animation: fadeInn .4s ease both;
+}
+
+.kveld-laast {
+  background: var(--duk);
+  border-radius: var(--radius);
+  box-shadow: var(--skygge);
+  padding: 34px 24px;
+  text-align: center;
+}
+.kveld-laast .laas-ikon { font-size: 46px; }
+.kveld-laast .laast-tittel {
+  font-family: var(--serif);
+  font-size: 1.7rem;
+  font-weight: 600;
+  color: var(--navy);
+  margin: 10px 0 6px;
+}
+.kveld-laast .laast-under { color: var(--navy-myk); max-width: 24em; margin: 0 auto; }
+.kveld-laast .nedtelling {
+  margin-top: 16px;
+  font-family: var(--serif);
+  font-size: 1.35rem;
+  color: var(--blaa-dyp);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Faner */
+.faner {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.fane {
+  appearance: none;
+  border: 1px solid rgba(106,169,217,0.35);
+  background: var(--duk);
+  color: var(--blaa-dyp);
+  font-family: var(--sans);
+  font-size: 0.92rem;
+  font-weight: 600;
+  padding: 9px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+  box-shadow: var(--skygge);
+  transition: background .15s ease, color .15s ease;
+}
+.fane.aktiv {
+  background: linear-gradient(135deg, #6aa9d9, #3f6f96);
+  color: #fff;
+  border-color: var(--blaa-dyp);
+}
+
+/* Bingo */
+.bingo-info { text-align: center; color: var(--navy-myk); font-size: 0.9rem; margin: 0 0 14px; }
+.bingo-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.bingo-celle {
+  appearance: none;
+  border: 1px solid rgba(106,169,217,0.3);
+  background: #fbfdff;
+  color: var(--navy);
+  border-radius: var(--radius-liten);
+  padding: 8px 6px;
+  min-height: 82px;
+  font-size: 0.76rem;
+  line-height: 1.2;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  transition: transform .12s ease, background .15s ease, box-shadow .15s ease;
+}
+.bingo-celle:active { transform: scale(0.96); }
+.bingo-celle.merket {
+  background: linear-gradient(135deg, #6aa9d9, #3f6f96);
+  color: #fff;
+  border-color: var(--blaa-dyp);
+  box-shadow: var(--skygge);
+}
+.bingo-celle.gratis {
+  background: linear-gradient(135deg, #f4ecd6, #e7dcc4);
+  color: var(--navy);
+  border-color: var(--gull);
+  font-weight: 600;
+  cursor: default;
+}
+.bingo-status {
+  text-align: center;
+  margin: 16px 0 10px;
+  color: var(--navy-myk);
+  font-size: 0.95rem;
+  min-height: 1.6em;
+}
+.bingo-rop {
+  font-family: var(--serif);
+  font-size: 1.9rem;
+  font-weight: 600;
+  color: var(--gull);
+  letter-spacing: 0.04em;
+}
+
 /* ---------- Feil / laster ---------- */
 .beskjed {
   background: var(--duk);

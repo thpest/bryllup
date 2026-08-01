@@ -6,7 +6,7 @@
 
 const app = document.getElementById("app");
 
-const DATA = { gjester: null, meny: null, program: null, smalltalk: null, vitser: null, santusant: null, utmerkelser: null, hilsener: null };
+const DATA = { gjester: null, meny: null, program: null, smalltalk: null, vitser: null, santusant: null, utmerkelser: null, hilsener: null, kveld: null };
 
 /* ---------- Hjelpere ---------- */
 function el(html) {
@@ -33,7 +33,7 @@ async function hentJSON(sti) {
 /* ---------- Oppstart ---------- */
 async function start() {
   try {
-    const [gjester, meny, program, smalltalk, vitser, santusant, utmerkelser, hilsener] = await Promise.all([
+    const [gjester, meny, program, smalltalk, vitser, santusant, utmerkelser, hilsener, kveld] = await Promise.all([
       hentJSON("data/gjester.json"),
       hentJSON("data/meny.json").catch(() => null),
       hentJSON("data/program.json").catch(() => null),
@@ -42,6 +42,7 @@ async function start() {
       hentJSON("data/sant_usant.json").catch(() => null),
       hentJSON("data/utmerkelser.json").catch(() => null),
       hentJSON("data/hilsener.json").catch(() => null),
+      hentJSON("data/kveld.json").catch(() => null),
     ]);
     DATA.gjester = gjester;
     DATA.meny = meny;
@@ -51,6 +52,8 @@ async function start() {
     DATA.santusant = santusant;
     DATA.utmerkelser = utmerkelser;
     DATA.hilsener = hilsener;
+    DATA.kveld = kveld;
+    startKveldvakt();
     document.title = "Bryllup · " + (gjester.bryllup?.par || "");
     window.addEventListener("hashchange", ruter);
     ruter();
@@ -76,6 +79,7 @@ function ruter() {
   else if (h === "smalltalk") visSmalltalk();
   else if (h === "vitser") visVitser();
   else if (h === "santusant") visSantUsant();
+  else if (h === "kveld") visKveld();
   else visForside();
   app.classList.add("fade-inn");
   window.scrollTo(0, 0);
@@ -133,7 +137,31 @@ function visForside() {
     </a>`);
     knapper.append(a);
   }
+
+  // Kveldsmodus – låst til kl. 20:00
+  if (DATA.kveld) {
+    const aapen = erKveldAapen();
+    const sett = kveldErSett();
+    const kn = el(`<a class="stor-knapp kveld-knapp ${aapen ? "aapen" : "laast"}" href="#/kveld">
+      <span class="ikon">${aapen ? "🍸" : "🔒"}</span>
+      <span class="tekst">
+        <span class="tittel">${esc(DATA.kveld.tittel || "Kveldsmodus")}${aapen && !sett ? ' <span class="nytt-merke">Nytt!</span>' : ""}</span>
+        <span class="under">${aapen ? esc(DATA.kveld.undertittel || "Baren er åpen!") : "Åpner kl. 20:00 når baren åpner"}</span>
+      </span>
+      <span class="pil">›</span>
+    </a>`);
+    knapper.append(kn);
+  }
+
   app.append(knapper);
+
+  // Banner hvis kvelden nettopp har åpnet og gjesten ikke har sett den ennå
+  if (DATA.kveld && erKveldAapen() && !kveldErSett()) {
+    const banner = el(`<div class="kveld-banner">🍸 Baren er åpen – <b>Kveldsmodus</b> er låst opp! Trykk for å se hva som venter.</div>`);
+    banner.addEventListener("click", () => { location.hash = "#/kveld"; });
+    app.append(banner);
+  }
+
   app.append(el(`<p class="forside-bunn">Vi gleder oss til å feire sammen med dere ♥</p>`));
 }
 
@@ -662,6 +690,193 @@ function visSantUsant() {
   visKnapp.addEventListener("click", visSvar);
   kort.querySelector("#su-neste").addEventListener("click", nyPastand);
   nyPastand();
+}
+
+/* ---------- Kveldsmodus (låses opp kl. 20:00) ---------- */
+const trekkKveldOppdrag = lagTrekker(() => DATA.kveld?.oppdrag);
+const trekkKveldSmalltalk = lagTrekker(() => DATA.kveld?.smalltalk);
+
+// Forhåndsvisning: legg til ?kveld=1 i adressen for å låse opp uansett klokke
+function erKveldForhaandsvis() {
+  try { return new URLSearchParams(location.search).get("kveld") === "1"; } catch (_) { return false; }
+}
+function kveldMaaltid() {
+  const t = DATA.gjester?.bryllup?.kveldLaasOpp;
+  const ms = t ? new Date(t).getTime() : NaN;
+  return isNaN(ms) ? null : ms;
+}
+function erKveldAapen() {
+  if (erKveldForhaandsvis()) return true;
+  const maal = kveldMaaltid();
+  if (maal === null) return true; // mangler/ugyldig tid → vis heller enn å skjule
+  return Date.now() >= maal;
+}
+function kveldErSett() { try { return localStorage.getItem("kveldSett") === "1"; } catch (_) { return false; } }
+function markerKveldSett() { try { localStorage.setItem("kveldSett", "1"); } catch (_) {} }
+
+let kveldVarslet = false;
+let kveldTimer = null;
+function startKveldvakt() {
+  if (!DATA.kveld) return;
+  if (erKveldAapen()) { kveldVarslet = true; return; } // allerede åpen ved lasting – ingen live-effekt
+  if (kveldTimer) return;
+  kveldTimer = setInterval(() => {
+    if (erKveldAapen() && !kveldVarslet) {
+      kveldVarslet = true;
+      spillTruddelutt();
+      if (location.hash.replace(/^#\/?/, "") === "") visForside();
+      clearInterval(kveldTimer); kveldTimer = null;
+    }
+  }, 15000);
+}
+
+function visKveld() {
+  app.innerHTML = "";
+  app.append(topplinje(DATA.kveld?.tittel || "Kveldsmodus"));
+  if (!DATA.kveld) { app.append(el(`<div class="beskjed">Kommer snart …</div>`)); return; }
+  if (!erKveldAapen()) { visKveldLaast(); return; }
+
+  markerKveldSett();
+  if (DATA.kveld.undertittel) {
+    app.append(el(`<div class="seksjon-topp"><p class="under">${esc(DATA.kveld.undertittel)}</p></div>`));
+  }
+
+  const faner = [];
+  if (DATA.kveld.oppdrag?.length) faner.push({ id: "oppdrag", navn: "Oppdrag", ikon: "🎯" });
+  if (DATA.kveld.smalltalk?.length) faner.push({ id: "smalltalk", navn: "Smalltalk", ikon: "💬" });
+  if (DATA.kveld.bingo?.ruter?.length) faner.push({ id: "bingo", navn: "Bingo", ikon: "🕺" });
+
+  const fanerad = el(`<div class="faner"></div>`);
+  const innhold = el(`<div id="kveld-innhold"></div>`);
+  faner.forEach((f) => {
+    const knapp = el(`<button class="fane" data-id="${f.id}">${f.ikon} ${esc(f.navn)}</button>`);
+    knapp.addEventListener("click", () => velgFane(f.id));
+    fanerad.append(knapp);
+  });
+  app.append(fanerad);
+  app.append(innhold);
+
+  function velgFane(id) {
+    [...fanerad.children].forEach((k) => k.classList.toggle("aktiv", k.dataset.id === id));
+    if (id === "oppdrag") tegnKveldTrekk(innhold, "🎯", "Nytt oppdrag →", trekkKveldOppdrag);
+    else if (id === "smalltalk") tegnKveldTrekk(innhold, "💬", "Nytt spørsmål →", trekkKveldSmalltalk);
+    else if (id === "bingo") tegnBingo(innhold);
+  }
+  if (faner.length) velgFane(faner[0].id);
+}
+
+function tegnKveldTrekk(container, emoji, knappTekst, trekker) {
+  container.innerHTML = "";
+  const kort = el(`<div class="moro-kort">
+    <div class="moro-emoji">${emoji}</div>
+    <p class="moro-tekst" id="kv-tekst"></p>
+    <button class="neste-knapp" id="kv-neste">${esc(knappTekst)}</button>
+  </div>`);
+  container.append(kort);
+  const t = kort.querySelector("#kv-tekst");
+  const vis = () => {
+    t.textContent = trekker();
+    t.classList.remove("fade-inn");
+    void t.offsetWidth;
+    t.classList.add("fade-inn");
+  };
+  kort.querySelector("#kv-neste").addEventListener("click", vis);
+  vis();
+}
+
+function visKveldLaast() {
+  const boks = el(`<div class="kveld-laast">
+    <div class="laas-ikon">🔒</div>
+    <p class="laast-tittel">Kveldsmodus åpner kl. 20:00</p>
+    <p class="laast-under">Når baren åpner, låses noe nytt og morsomt opp her. Kom tilbake da!</p>
+    <p class="nedtelling" id="nedtelling"></p>
+  </div>`);
+  app.append(boks);
+  const ned = boks.querySelector("#nedtelling");
+  const maal = kveldMaaltid();
+  const oppdater = () => {
+    if (maal === null) { ned.textContent = ""; return; }
+    const diff = maal - Date.now();
+    if (diff <= 0) { visKveld(); return; }
+    const t = Math.floor(diff / 3600000);
+    const m = Math.floor((diff % 3600000) / 60000);
+    const s = Math.floor((diff % 60000) / 1000);
+    ned.textContent = `Åpner om ${t}t ${String(m).padStart(2, "0")}m ${String(s).padStart(2, "0")}s`;
+  };
+  oppdater();
+  const iv = setInterval(() => {
+    if (!document.body.contains(boks)) { clearInterval(iv); return; }
+    oppdater();
+  }, 1000);
+}
+
+/* ---- Dansegulv-bingo ---- */
+function bingoKort() {
+  const pool = DATA.kveld.bingo.ruter || [];
+  const gratis = DATA.kveld.bingo.gratis || "Gratis";
+  let lagret = null;
+  try { lagret = JSON.parse(localStorage.getItem("bingoKort") || "null"); } catch (_) {}
+  if (Array.isArray(lagret) && lagret.length === 9) return lagret;
+  const valgt = stokk(pool).slice(0, 8);
+  const kort = [];
+  let v = 0;
+  for (let i = 0; i < 9; i++) kort.push(i === 4 ? gratis : (valgt[v++] ?? "—"));
+  try { localStorage.setItem("bingoKort", JSON.stringify(kort)); } catch (_) {}
+  return kort;
+}
+function tomtBingoMerke() { return [false, false, false, false, true, false, false, false, false]; }
+function bingoMerker() {
+  let m = null;
+  try { m = JSON.parse(localStorage.getItem("bingoMerket") || "null"); } catch (_) {}
+  if (!Array.isArray(m) || m.length !== 9) m = tomtBingoMerke();
+  m[4] = true;
+  return m;
+}
+function lagreBingoMerker(m) { try { localStorage.setItem("bingoMerket", JSON.stringify(m)); } catch (_) {} }
+function erBingo(m) {
+  const linjer = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+  return linjer.some((l) => l.every((i) => m[i]));
+}
+function tegnBingo(container) {
+  container.innerHTML = "";
+  const kort = bingoKort();
+  let merker = bingoMerker();
+  let bingoVist = erBingo(merker);
+
+  const info = el(`<p class="bingo-info">${esc(DATA.kveld.bingo.undertittel || "")}</p>`);
+  const grid = el(`<div class="bingo-grid"></div>`);
+  const status = el(`<div class="bingo-status" id="bingo-status"></div>`);
+  const nullstill = el(`<button class="neste-knapp lys" id="bingo-null">Nullstill brettet</button>`);
+  container.append(info, grid, status, nullstill);
+
+  const oppdaterStatus = () => {
+    if (erBingo(merker)) status.innerHTML = `<span class="bingo-rop">BINGO! 🎉</span>`;
+    else status.textContent = `${merker.filter(Boolean).length} av 9 krysset av`;
+  };
+  const tegnCeller = () => {
+    grid.innerHTML = "";
+    kort.forEach((tekst, i) => {
+      const c = el(`<button class="bingo-celle ${merker[i] ? "merket" : ""} ${i === 4 ? "gratis" : ""}">${esc(tekst)}</button>`);
+      c.addEventListener("click", () => {
+        if (i === 4) return;
+        merker[i] = !merker[i];
+        lagreBingoMerker(merker);
+        c.classList.toggle("merket", merker[i]);
+        oppdaterStatus();
+        if (!bingoVist && erBingo(merker)) { bingoVist = true; spillTruddelutt(); }
+      });
+      grid.append(c);
+    });
+  };
+  nullstill.addEventListener("click", () => {
+    merker = tomtBingoMerke();
+    lagreBingoMerker(merker);
+    bingoVist = false;
+    tegnCeller();
+    oppdaterStatus();
+  });
+  tegnCeller();
+  oppdaterStatus();
 }
 
 start();
