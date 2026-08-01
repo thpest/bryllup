@@ -1,39 +1,94 @@
 {
-  "tittel": "Meny",
-  "undertittel": "Middagen serveres i festsalen",
+  "tittel": { "no": "Meny", "en": "Menu", "de": "Menü", "es": "Menú" },
+  "undertittel": {
+    "no": "Middagen serveres i festsalen",
+    "en": "Dinner is served in the banquet hall",
+    "de": "Das Dinner wird im Festsaal serviert",
+    "es": "La cena se sirve en el salón"
+  },
   "retter": [
     {
-      "type": "Velkomst",
-      "navn": "Et glass ved ankomst",
-      "beskrivelse": "Musserende drikke og en liten appetittvekker.",
+      "type": { "no": "Velkomst", "en": "Welcome", "de": "Empfang", "es": "Bienvenida" },
+      "navn": {
+        "no": "Et glass ved ankomst",
+        "en": "A glass on arrival",
+        "de": "Ein Glas zur Begrüßung",
+        "es": "Una copa de bienvenida"
+      },
+      "beskrivelse": {
+        "no": "Musserende drikke og en liten appetittvekker.",
+        "en": "Sparkling wine and a little appetiser.",
+        "de": "Sekt und ein kleiner Appetithappen.",
+        "es": "Vino espumoso y un pequeño aperitivo."
+      },
       "allergener": "",
       "ikon": "🥂"
     },
     {
-      "type": "Forrett",
-      "navn": "Aspargessalat fra Ørsta",
-      "beskrivelse": "Aspargessalat med ovnsbakt kvitlin fra Ørsta med honning og valnøtter. Toppes med eplemarmelade og sprøstekt coppaskinke",
+      "type": { "no": "Forrett", "en": "Starter", "de": "Vorspeise", "es": "Entrante" },
+      "navn": {
+        "no": "Aspargessalat fra Ørsta",
+        "en": "Asparagus salad from Ørsta",
+        "de": "Spargelsalat aus Ørsta",
+        "es": "Ensalada de espárragos de Ørsta"
+      },
+      "beskrivelse": {
+        "no": "Aspargessalat med ovnsbakt kvitlin fra Ørsta med honning og valnøtter. Toppes med eplemarmelade og sprøstekt coppaskinke",
+        "en": "Asparagus salad with oven-baked kvitlin from Ørsta, honey and walnuts. Topped with apple marmalade and crispy coppa ham.",
+        "de": "Spargelsalat mit ofengebackenem Kvitlin aus Ørsta, Honig und Walnüssen. Getoppt mit Apfelmarmelade und knusprigem Coppa-Schinken.",
+        "es": "Ensalada de espárragos con kvitlin al horno de Ørsta, miel y nueces. Coronada con mermelada de manzana y jamón coppa crujiente."
+      },
       "allergener": "",
       "ikon": "🥗"
     },
     {
-      "type": "Hovedrett",
-      "navn": "Filet av hjort",
-      "beskrivelse": "Filet av hjort, smørstekt sopp, glaserte rotgrønnsaker og rotpuré med cognacsaus og ristet sort pepper. Serveres med rørte tyttebær.",
+      "type": { "no": "Hovedrett", "en": "Main course", "de": "Hauptgericht", "es": "Plato principal" },
+      "navn": {
+        "no": "Filet av hjort",
+        "en": "Fillet of venison",
+        "de": "Hirschfilet",
+        "es": "Solomillo de venado"
+      },
+      "beskrivelse": {
+        "no": "Filet av hjort, smørstekt sopp, glaserte rotgrønnsaker og rotpuré med cognacsaus og ristet sort pepper. Serveres med rørte tyttebær.",
+        "en": "Fillet of venison, sautéed mushrooms, glazed root vegetables and root purée with cognac sauce and toasted black pepper. Served with stirred lingonberries.",
+        "de": "Hirschfilet, in Butter gebratene Pilze, glasiertes Wurzelgemüse und Wurzelpüree mit Cognac-Sauce und geröstetem schwarzem Pfeffer. Serviert mit gerührten Preiselbeeren.",
+        "es": "Solomillo de venado, setas salteadas, verduras de raíz glaseadas y puré de raíces con salsa de coñac y pimienta negra tostada. Servido con arándanos rojos."
+      },
       "allergener": "",
       "ikon": "🦌"
     },
     {
-      "type": "Dessert",
-      "navn": "Crème brûlée",
-      "beskrivelse": "Crème brûlée servert med friske bær.",
+      "type": { "no": "Dessert", "en": "Dessert", "de": "Dessert", "es": "Postre" },
+      "navn": {
+        "no": "Crème brûlée",
+        "en": "Crème brûlée",
+        "de": "Crème brûlée",
+        "es": "Crème brûlée"
+      },
+      "beskrivelse": {
+        "no": "Crème brûlée servert med friske bær.",
+        "en": "Crème brûlée served with fresh berries.",
+        "de": "Crème brûlée mit frischen Beeren.",
+        "es": "Crème brûlée con bayas frescas."
+      },
       "allergener": "",
       "ikon": "🍮"
     },
     {
-      "type": "Kaffe",
-      "navn": "Kaffe og noe godt",
-      "beskrivelse": "Kaffe og te serveres etter middagen.",
+      "type": { "no": "Kaffe", "en": "Coffee", "de": "Kaffee", "es": "Café" },
+      "navn": {
+        "no": "Kaffe og noe godt",
+        "en": "Coffee and something sweet",
+        "de": "Kaffee und etwas Süßes",
+        "es": "Café y algo dulce"
+      },
+      "beskrivelse": {
+        "no": "Kaffe og te serveres etter middagen.",
+        "en": "Coffee and tea are served after dinner.",
+        "de": "Kaffee und Tee werden nach dem Essen serviert.",
+        "es": "Se sirve café y té después de la cena."
+      },
       "allergener": "",
       "ikon": "☕"
     }

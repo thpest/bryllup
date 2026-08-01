@@ -1,83 +1,193 @@
 {
-  "tittel": "Program",
-  "undertittel": "Slik blir dagen",
+  "tittel": { "no": "Program", "en": "Programme", "de": "Programm", "es": "Programa" },
+  "undertittel": {
+    "no": "Slik blir dagen",
+    "en": "How the day unfolds",
+    "de": "So verläuft der Tag",
+    "es": "Cómo será el día"
+  },
   "poster": [
     {
       "tid": "14.30",
-      "tittel": "Gjestene ankommer",
-      "beskrivelse": "Fingermat og bobler serveres – baren er åpen.",
+      "tittel": {
+        "no": "Gjestene ankommer",
+        "en": "Guests arrive",
+        "de": "Ankunft der Gäste",
+        "es": "Llegada de los invitados"
+      },
+      "beskrivelse": {
+        "no": "Fingermat og bobler serveres – baren er åpen.",
+        "en": "Finger food and bubbly are served – the bar is open.",
+        "de": "Fingerfood und Sekt werden serviert – die Bar ist offen.",
+        "es": "Se sirven aperitivos y espumoso – la barra está abierta."
+      },
       "ikon": "🥂"
     },
     {
       "tid": "16.00",
-      "tittel": "Brudeparet ankommer",
-      "beskrivelse": "Vi skåler i bobler, og bryllupskaken serveres.",
+      "tittel": {
+        "no": "Brudeparet ankommer",
+        "en": "The couple arrives",
+        "de": "Das Brautpaar kommt an",
+        "es": "Llegan los novios"
+      },
+      "beskrivelse": {
+        "no": "Vi skåler i bobler, og bryllupskaken serveres.",
+        "en": "We toast with bubbly, and the wedding cake is served.",
+        "de": "Wir stoßen mit Sekt an, und die Hochzeitstorte wird serviert.",
+        "es": "Brindamos con espumoso y se sirve la tarta nupcial."
+      },
       "ikon": "💍"
     },
     {
       "tid": "17.00",
-      "tittel": "Bordsetting",
-      "beskrivelse": "Vi finner plassene våre.",
+      "tittel": {
+        "no": "Bordsetting",
+        "en": "Seating",
+        "de": "Platznahme",
+        "es": "Nos sentamos"
+      },
+      "beskrivelse": {
+        "no": "Vi finner plassene våre.",
+        "en": "We find our seats.",
+        "de": "Wir suchen unsere Plätze.",
+        "es": "Buscamos nuestros sitios."
+      },
       "ikon": "🪑"
     },
     {
       "tid": "17.15",
-      "tittel": "Velkomst",
-      "beskrivelse": "Toastmaster ønsker velkommen og presenterer mat og drikke.",
+      "tittel": {
+        "no": "Velkomst",
+        "en": "Welcome",
+        "de": "Begrüßung",
+        "es": "Bienvenida"
+      },
+      "beskrivelse": {
+        "no": "Toastmaster ønsker velkommen og presenterer mat og drikke.",
+        "en": "The toastmaster welcomes everyone and presents the food and drink.",
+        "de": "Der Toastmaster begrüßt alle und stellt Speisen und Getränke vor.",
+        "es": "El maestro de ceremonias da la bienvenida y presenta la comida y bebida."
+      },
       "ikon": "🎤"
     },
     {
       "tid": "17.20",
-      "tittel": "Forrett – aspargessalat",
-      "beskrivelse": "Tale ved bruden og brudgommen.",
+      "tittel": {
+        "no": "Forrett – aspargessalat",
+        "en": "Starter – asparagus salad",
+        "de": "Vorspeise – Spargelsalat",
+        "es": "Entrante – ensalada de espárragos"
+      },
+      "beskrivelse": {
+        "no": "Tale ved bruden og brudgommen.",
+        "en": "Speeches by the bride and groom.",
+        "de": "Reden von Braut und Bräutigam.",
+        "es": "Discursos de los novios."
+      },
       "ikon": "🥗"
     },
     {
       "tid": "18.20",
-      "tittel": "Hovedrett – filet av hjort",
-      "beskrivelse": "Tale ved foreldrene.",
+      "tittel": {
+        "no": "Hovedrett – filet av hjort",
+        "en": "Main course – fillet of venison",
+        "de": "Hauptgericht – Hirschfilet",
+        "es": "Plato principal – solomillo de venado"
+      },
+      "beskrivelse": {
+        "no": "Tale ved foreldrene.",
+        "en": "Speech by the parents.",
+        "de": "Rede der Eltern.",
+        "es": "Discurso de los padres."
+      },
       "ikon": "🦌"
     },
     {
       "tid": "19.00",
-      "tittel": "Tale ved forlover",
+      "tittel": {
+        "no": "Tale ved forlover",
+        "en": "Speech by the witnesses",
+        "de": "Rede der Trauzeugen",
+        "es": "Discurso de los testigos"
+      },
       "beskrivelse": "",
       "ikon": "🥂"
     },
     {
       "tid": "19.40",
-      "tittel": "Dessert – crème brûlée",
-      "beskrivelse": "Flere taler.",
+      "tittel": {
+        "no": "Dessert – crème brûlée",
+        "en": "Dessert – crème brûlée",
+        "de": "Dessert – Crème brûlée",
+        "es": "Postre – crème brûlée"
+      },
+      "beskrivelse": {
+        "no": "Flere taler.",
+        "en": "More speeches.",
+        "de": "Weitere Reden.",
+        "es": "Más discursos."
+      },
       "ikon": "🍮"
     },
     {
       "tid": "20.00",
-      "tittel": "Baren åpner",
+      "tittel": {
+        "no": "Baren åpner",
+        "en": "The bar opens",
+        "de": "Die Bar öffnet",
+        "es": "Abre la barra"
+      },
       "beskrivelse": "",
       "ikon": "🍸"
     },
     {
       "tid": "21.30",
-      "tittel": "Kake, kaffe og avec",
+      "tittel": {
+        "no": "Kake, kaffe og avec",
+        "en": "Cake, coffee and digestif",
+        "de": "Kuchen, Kaffee und Digestif",
+        "es": "Tarta, café y licor"
+      },
       "beskrivelse": "",
       "ikon": "☕"
     },
     {
       "tid": "00.00",
-      "tittel": "Nattmat – pølser",
+      "tittel": {
+        "no": "Nattmat – pølser",
+        "en": "Late-night food – sausages",
+        "de": "Mitternachtssnack – Würstchen",
+        "es": "Comida nocturna – salchichas"
+      },
       "beskrivelse": "",
       "ikon": "🌭"
     },
     {
       "tid": "01.30",
-      "tittel": "Siste servering i baren",
+      "tittel": {
+        "no": "Siste servering i baren",
+        "en": "Last call at the bar",
+        "de": "Letzte Bestellung an der Bar",
+        "es": "Última ronda en la barra"
+      },
       "beskrivelse": "",
       "ikon": "🕐"
     },
     {
       "tid": "02.00",
-      "tittel": "Takk for i kveld",
-      "beskrivelse": "Festen avsluttes.",
+      "tittel": {
+        "no": "Takk for i kveld",
+        "en": "Goodnight",
+        "de": "Gute Nacht",
+        "es": "Buenas noches"
+      },
+      "beskrivelse": {
+        "no": "Festen avsluttes.",
+        "en": "The party comes to an end.",
+        "de": "Die Feier geht zu Ende.",
+        "es": "La fiesta llega a su fin."
+      },
       "ikon": "🌙"
     }
   ]

@@ -8,6 +8,227 @@ const app = document.getElementById("app");
 
 const DATA = { gjester: null, meny: null, program: null, smalltalk: null, vitser: null, santusant: null, utmerkelser: null, hilsener: null, kveld: null };
 
+/* ---------- Språk (i18n) ---------- */
+let SPRAK = "no";
+try { SPRAK = localStorage.getItem("sprak") || "no"; } catch (_) {}
+
+const SPRAAK_LISTE = [["no", "🇳🇴"], ["en", "🇬🇧"], ["de", "🇩🇪"], ["es", "🇪🇸"]];
+
+const I18N = {
+  no: {
+    tilbake: "Tilbake",
+    forsideBunn: "Vi gleder oss til å feire sammen med dere ♥",
+    btnPlassT: "Finn min plass", btnPlassU: "Søk opp navnet ditt og se bordet",
+    btnMenyT: "Meny", btnMenyU: "Hva serveres i dag",
+    btnProgramT: "Program", btnProgramU: "Slik blir dagen",
+    btnBilderT: "Bilder", btnBilderU: "Se og del bilder fra dagen",
+    btnSmalltalkT: "Smalltalk", btnSmalltalkU: "Bryt isen med sidemannen",
+    btnSantusantT: "Sant eller usant", btnSantusantU: "Hvor godt kjenner du brudeparet?",
+    btnVitserT: "Vitser", btnVitserU: "En liten skrøne mellom rettene",
+    sokPlaceholder: "Skriv navnet ditt …", sokAria: "Søk etter navnet ditt",
+    tappHint: "Tips: trykk på et navn for en liten overraskelse 🎉",
+    bord: "Bord", deg: "Deg",
+    vedSidenAv2: "Ved siden av deg: {a} og {b}.",
+    vedSidenAv1: "Ved siden av deg: {a}.",
+    rettOverfor: "Rett overfor: {x}.",
+    plassMarkert: "Plassen din er markert nedenfor.",
+    flereBord: "{navn} finnes ved flere bord. Hvilket er ditt?",
+    menteDu: "Mente du noen av disse?",
+    ingenTreff: "Fant ingen med «{q}». Prøv fornavnet, eller spør en av vertene.",
+    allergener: "Allergener:",
+    bilderUndertittel: "Del minnene fra dagen",
+    bilderTekst: "Ta del i minnene! Åpne vårt felles fotoalbum for å se bildene som deles – og gjerne legge til dine egne.",
+    bilderKnapp: "Åpne fotoalbumet",
+    bilderNote: "Albumet åpnes i Google Foto. For å laste opp bilder må du være innlogget med en Google-konto – alle med lenken kan se bildene.",
+    smalltalkUnder: "Bryt isen – trekk et spørsmål og spør sidemannen!", smalltalkNy: "Ny setning →",
+    vitserUnder: "Trekk en vits – perfekt til en pause mellom rettene!", vitserNy: "Ny vits →",
+    suUnder: "Hvor godt kjenner du brudeparet? Gjett først – trykk så «Vis svar».",
+    suVisSvar: "Vis svar", suNy: "Ny påstand →", suSant: "SANT", suUsant: "USANT",
+    kveldTittel: "Kveldsmodus", kveldAapenUnder: "Baren er åpen!",
+    kveldLaastUnder: "Åpner kl. 20:00 når baren åpner", nytt: "Nytt!",
+    kveldBanner: "🍸 Baren er åpen – Kveldsmodus er låst opp! Trykk for å se hva som venter.",
+    kveldUnder: "Baren er åpen – nå løsner det litt!",
+    kveldLaastTittel: "Kveldsmodus åpner kl. 20:00",
+    kveldLaastUnder2: "Når baren åpner, låses noe nytt og morsomt opp her. Kom tilbake da!",
+    aapnerOm: "Åpner om {t}t {m}m {s}s",
+    fanOppdrag: "Oppdrag", fanSmalltalk: "Smalltalk", fanBingo: "Bingo",
+    kveldNyOppdrag: "Nytt oppdrag →", kveldNySporsmal: "Nytt spørsmål →",
+    bingoInstr: "Trykk på rutene du ser skje. Full rad, kolonne eller diagonal = BINGO!",
+    bingoStatus: "{n} av 9 krysset av", bingoRop: "BINGO! 🎉", bingoNullstill: "Nullstill brettet",
+    komSnart: "Kommer snart …",
+  },
+  en: {
+    tilbake: "Back",
+    forsideBunn: "We can't wait to celebrate with you ♥",
+    btnPlassT: "Find my seat", btnPlassU: "Search your name and see your table",
+    btnMenyT: "Menu", btnMenyU: "What's being served today",
+    btnProgramT: "Programme", btnProgramU: "How the day unfolds",
+    btnBilderT: "Photos", btnBilderU: "View and share photos from the day",
+    btnSmalltalkT: "Small talk", btnSmalltalkU: "Break the ice with your neighbour",
+    btnSantusantT: "True or false", btnSantusantU: "How well do you know the couple?",
+    btnVitserT: "Jokes", btnVitserU: "A little joke between courses",
+    sokPlaceholder: "Type your name …", sokAria: "Search for your name",
+    tappHint: "Tip: tap a name for a little surprise 🎉",
+    bord: "Table", deg: "You",
+    vedSidenAv2: "Next to you: {a} and {b}.",
+    vedSidenAv1: "Next to you: {a}.",
+    rettOverfor: "Right across from you: {x}.",
+    plassMarkert: "Your seat is highlighted below.",
+    flereBord: "There's more than one {navn}. Which table is yours?",
+    menteDu: "Did you mean one of these?",
+    ingenTreff: "No one found for «{q}». Try your first name, or ask one of the hosts.",
+    allergener: "Allergens:",
+    bilderUndertittel: "Share the day's memories",
+    bilderTekst: "Be part of the memories! Open our shared photo album to see the photos being shared – and add your own.",
+    bilderKnapp: "Open the photo album",
+    bilderNote: "The album opens in Google Photos. To upload photos you need to be signed in with a Google account – anyone with the link can view them.",
+    smalltalkUnder: "Break the ice – draw a question and ask your neighbour!", smalltalkNy: "New question →",
+    vitserUnder: "Draw a joke – perfect for a break between courses!", vitserNy: "New joke →",
+    suUnder: "How well do you know the couple? Guess first – then tap «Show answer».",
+    suVisSvar: "Show answer", suNy: "New statement →", suSant: "TRUE", suUsant: "FALSE",
+    kveldTittel: "Evening mode", kveldAapenUnder: "The bar is open!",
+    kveldLaastUnder: "Opens at 20:00 when the bar opens", nytt: "New!",
+    kveldBanner: "🍸 The bar is open – Evening mode is unlocked! Tap to see what's waiting.",
+    kveldUnder: "The bar is open – time to loosen up!",
+    kveldLaastTittel: "Evening mode opens at 20:00",
+    kveldLaastUnder2: "When the bar opens, something new and fun unlocks here. Come back then!",
+    aapnerOm: "Opens in {t}h {m}m {s}s",
+    fanOppdrag: "Missions", fanSmalltalk: "Small talk", fanBingo: "Bingo",
+    kveldNyOppdrag: "New mission →", kveldNySporsmal: "New question →",
+    bingoInstr: "Tap the squares you see happen. A full row, column or diagonal = BINGO!",
+    bingoStatus: "{n} of 9 marked", bingoRop: "BINGO! 🎉", bingoNullstill: "Reset the board",
+    komSnart: "Coming soon …",
+  },
+  de: {
+    tilbake: "Zurück",
+    forsideBunn: "Wir freuen uns darauf, mit euch zu feiern ♥",
+    btnPlassT: "Meinen Platz finden", btnPlassU: "Suche deinen Namen und finde deinen Tisch",
+    btnMenyT: "Menü", btnMenyU: "Was heute serviert wird",
+    btnProgramT: "Programm", btnProgramU: "So verläuft der Tag",
+    btnBilderT: "Fotos", btnBilderU: "Fotos vom Tag ansehen und teilen",
+    btnSmalltalkT: "Small Talk", btnSmalltalkU: "Brich das Eis mit deinem Nachbarn",
+    btnSantusantT: "Wahr oder falsch", btnSantusantU: "Wie gut kennst du das Brautpaar?",
+    btnVitserT: "Witze", btnVitserU: "Ein kleiner Witz zwischen den Gängen",
+    sokPlaceholder: "Gib deinen Namen ein …", sokAria: "Nach deinem Namen suchen",
+    tappHint: "Tipp: Tippe auf einen Namen für eine kleine Überraschung 🎉",
+    bord: "Tisch", deg: "Du",
+    vedSidenAv2: "Neben dir: {a} und {b}.",
+    vedSidenAv1: "Neben dir: {a}.",
+    rettOverfor: "Direkt gegenüber: {x}.",
+    plassMarkert: "Dein Platz ist unten markiert.",
+    flereBord: "Es gibt mehrere {navn}. Welcher Tisch ist deiner?",
+    menteDu: "Meintest du eine dieser Personen?",
+    ingenTreff: "Niemand für «{q}» gefunden. Versuch deinen Vornamen oder frag einen der Gastgeber.",
+    allergener: "Allergene:",
+    bilderUndertittel: "Teilt die Erinnerungen des Tages",
+    bilderTekst: "Sei Teil der Erinnerungen! Öffne unser gemeinsames Fotoalbum, um die geteilten Fotos zu sehen – und füge gern eigene hinzu.",
+    bilderKnapp: "Fotoalbum öffnen",
+    bilderNote: "Das Album öffnet sich in Google Fotos. Zum Hochladen musst du mit einem Google-Konto angemeldet sein – ansehen kann jeder mit dem Link.",
+    smalltalkUnder: "Brich das Eis – zieh eine Frage und frag deinen Nachbarn!", smalltalkNy: "Neue Frage →",
+    vitserUnder: "Zieh einen Witz – perfekt für eine Pause zwischen den Gängen!", vitserNy: "Neuer Witz →",
+    suUnder: "Wie gut kennst du das Brautpaar? Erst raten – dann auf «Antwort zeigen» tippen.",
+    suVisSvar: "Antwort zeigen", suNy: "Neue Aussage →", suSant: "WAHR", suUsant: "FALSCH",
+    kveldTittel: "Abendmodus", kveldAapenUnder: "Die Bar ist offen!",
+    kveldLaastUnder: "Öffnet um 20:00 Uhr, wenn die Bar öffnet", nytt: "Neu!",
+    kveldBanner: "🍸 Die Bar ist offen – der Abendmodus ist freigeschaltet! Tippe, um zu sehen, was dich erwartet.",
+    kveldUnder: "Die Bar ist offen – jetzt wird's lockerer!",
+    kveldLaastTittel: "Der Abendmodus öffnet um 20:00 Uhr",
+    kveldLaastUnder2: "Wenn die Bar öffnet, wird hier etwas Neues und Lustiges freigeschaltet. Komm dann wieder!",
+    aapnerOm: "Öffnet in {t}h {m}m {s}s",
+    fanOppdrag: "Aufgaben", fanSmalltalk: "Small Talk", fanBingo: "Bingo",
+    kveldNyOppdrag: "Neue Aufgabe →", kveldNySporsmal: "Neue Frage →",
+    bingoInstr: "Tippe auf die Felder, die du siehst. Eine volle Reihe, Spalte oder Diagonale = BINGO!",
+    bingoStatus: "{n} von 9 markiert", bingoRop: "BINGO! 🎉", bingoNullstill: "Feld zurücksetzen",
+    komSnart: "Kommt bald …",
+  },
+  es: {
+    tilbake: "Atrás",
+    forsideBunn: "¡Nos hace mucha ilusión celebrar con vosotros ♥",
+    btnPlassT: "Encontrar mi sitio", btnPlassU: "Busca tu nombre y ve tu mesa",
+    btnMenyT: "Menú", btnMenyU: "Qué se sirve hoy",
+    btnProgramT: "Programa", btnProgramU: "Cómo será el día",
+    btnBilderT: "Fotos", btnBilderU: "Ver y compartir fotos del día",
+    btnSmalltalkT: "Charla", btnSmalltalkU: "Rompe el hielo con tu vecino",
+    btnSantusantT: "Verdadero o falso", btnSantusantU: "¿Cuánto conoces a los novios?",
+    btnVitserT: "Chistes", btnVitserU: "Un chiste entre platos",
+    sokPlaceholder: "Escribe tu nombre …", sokAria: "Busca tu nombre",
+    tappHint: "Consejo: toca un nombre para una pequeña sorpresa 🎉",
+    bord: "Mesa", deg: "Tú",
+    vedSidenAv2: "A tu lado: {a} y {b}.",
+    vedSidenAv1: "A tu lado: {a}.",
+    rettOverfor: "Justo enfrente: {x}.",
+    plassMarkert: "Tu sitio está marcado abajo.",
+    flereBord: "Hay más de un/a {navn}. ¿Cuál es tu mesa?",
+    menteDu: "¿Querías decir alguno de estos?",
+    ingenTreff: "No se encontró a nadie con «{q}». Prueba con tu nombre, o pregunta a los anfitriones.",
+    allergener: "Alérgenos:",
+    bilderUndertittel: "Comparte los recuerdos del día",
+    bilderTekst: "¡Forma parte de los recuerdos! Abre nuestro álbum de fotos compartido para ver las fotos – y añade las tuyas.",
+    bilderKnapp: "Abrir el álbum de fotos",
+    bilderNote: "El álbum se abre en Google Fotos. Para subir fotos debes iniciar sesión con una cuenta de Google – cualquiera con el enlace puede verlas.",
+    smalltalkUnder: "Rompe el hielo – ¡saca una pregunta y pregúntale a tu vecino!", smalltalkNy: "Nueva frase →",
+    vitserUnder: "Saca un chiste – ¡perfecto para una pausa entre platos!", vitserNy: "Nuevo chiste →",
+    suUnder: "¿Cuánto conoces a los novios? Adivina primero – luego toca «Ver respuesta».",
+    suVisSvar: "Ver respuesta", suNy: "Nueva afirmación →", suSant: "VERDADERO", suUsant: "FALSO",
+    kveldTittel: "Modo noche", kveldAapenUnder: "¡La barra está abierta!",
+    kveldLaastUnder: "Se abre a las 20:00 cuando abre la barra", nytt: "¡Nuevo!",
+    kveldBanner: "🍸 La barra está abierta – ¡el modo noche está desbloqueado! Toca para ver lo que te espera.",
+    kveldUnder: "La barra está abierta – ¡a soltarse un poco!",
+    kveldLaastTittel: "El modo noche se abre a las 20:00",
+    kveldLaastUnder2: "Cuando abra la barra, aquí se desbloqueará algo nuevo y divertido. ¡Vuelve entonces!",
+    aapnerOm: "Abre en {t}h {m}m {s}s",
+    fanOppdrag: "Misiones", fanSmalltalk: "Charla", fanBingo: "Bingo",
+    kveldNyOppdrag: "Nueva misión →", kveldNySporsmal: "Nueva pregunta →",
+    bingoInstr: "Toca las casillas que veas ocurrir. Una fila, columna o diagonal completa = ¡BINGO!",
+    bingoStatus: "{n} de 9 marcadas", bingoRop: "¡BINGO! 🎉", bingoNullstill: "Reiniciar el cartón",
+    komSnart: "Próximamente …",
+  },
+};
+
+function t(key, vars) {
+  let s = (I18N[SPRAK] && I18N[SPRAK][key]);
+  if (s == null) s = (I18N.no && I18N.no[key]);
+  if (s == null) s = key;
+  if (vars) for (const k in vars) s = s.replace(new RegExp("\\{" + k + "\\}", "g"), vars[k]);
+  return s;
+}
+
+// Oversett et innholdsfelt som enten er en streng (norsk) eller {no,en,de,es}
+function tr(v) {
+  if (v && typeof v === "object" && !Array.isArray(v)) {
+    return v[SPRAK] ?? v.no ?? Object.values(v)[0] ?? "";
+  }
+  return v ?? "";
+}
+
+function setSprak(lang) {
+  if (!I18N[lang]) lang = "no";
+  SPRAK = lang;
+  try { localStorage.setItem("sprak", lang); } catch (_) {}
+  document.documentElement.lang = lang;
+  const bar = document.getElementById("sprakbar");
+  if (bar) [...bar.children].forEach((b) => b.classList.toggle("aktiv", b.dataset.lang === lang));
+  document.title = "Bryllup · " + (DATA.gjester?.bryllup?.par || "");
+  ruter();
+}
+
+function byggSprakbar() {
+  if (document.getElementById("sprakbar")) return;
+  const bar = document.createElement("div");
+  bar.id = "sprakbar";
+  bar.className = "sprakbar";
+  for (const [lang, flagg] of SPRAAK_LISTE) {
+    const b = document.createElement("button");
+    b.dataset.lang = lang;
+    b.textContent = flagg;
+    b.setAttribute("aria-label", lang.toUpperCase());
+    if (lang === SPRAK) b.classList.add("aktiv");
+    b.addEventListener("click", () => setSprak(lang));
+    bar.append(b);
+  }
+  document.body.append(bar);
+}
+
 /* ---------- Hjelpere ---------- */
 function el(html) {
   const t = document.createElement("template");
@@ -54,6 +275,8 @@ async function start() {
     DATA.hilsener = hilsener;
     DATA.kveld = kveld;
     startKveldvakt();
+    document.documentElement.lang = SPRAK;
+    byggSprakbar();
     document.title = "Bryllup · " + (gjester.bryllup?.par || "");
     window.addEventListener("hashchange", ruter);
     ruter();
@@ -86,12 +309,12 @@ function ruter() {
 }
 
 function topplinje(tittel) {
-  const t = el(`<div class="topp">
-    <button class="tilbake" aria-label="Tilbake">←</button>
+  const topp = el(`<div class="topp">
+    <button class="tilbake" aria-label="${esc(t("tilbake"))}">←</button>
     <h2>${esc(tittel)}</h2>
   </div>`);
-  t.querySelector(".tilbake").addEventListener("click", () => { location.hash = ""; });
-  return t;
+  topp.querySelector(".tilbake").addEventListener("click", () => { location.hash = ""; });
+  return topp;
 }
 
 /* ---------- Forside ---------- */
@@ -102,29 +325,29 @@ function visForside() {
     <header class="hero">
       <div class="kimg">💍</div>
       <h1 class="par">${esc(b.par || "Velkommen")}</h1>
-      <p class="dato">${esc(b.dato || "")}</p>
+      <p class="dato">${esc(tr(b.dato) || "")}</p>
       <hr class="skille">
-      <p class="hilsen">${esc(b.hilsen || "Velkommen til feiringen! Her finner du plassen din, menyen og programmet for dagen.")}</p>
+      <p class="hilsen">${esc(tr(b.hilsen) || "")}</p>
     </header>
   `));
 
   const knapper = el(`<nav class="meny-knapper"></nav>`);
   const punkter = [
-    { hash: "plass", ikon: "🪑", tittel: "Finn min plass", under: "Søk opp navnet ditt og se bordet" },
-    { hash: "meny", ikon: "🍽️", tittel: "Meny", under: "Hva serveres i dag" },
-    { hash: "program", ikon: "🎶", tittel: "Program", under: "Slik blir dagen" },
+    { hash: "plass", ikon: "🪑", tittel: t("btnPlassT"), under: t("btnPlassU") },
+    { hash: "meny", ikon: "🍽️", tittel: t("btnMenyT"), under: t("btnMenyU") },
+    { hash: "program", ikon: "🎶", tittel: t("btnProgramT"), under: t("btnProgramU") },
   ];
   if (b.bilderUrl) {
-    punkter.push({ hash: "bilder", ikon: "📷", tittel: "Bilder", under: "Se og del bilder fra dagen" });
+    punkter.push({ hash: "bilder", ikon: "📷", tittel: t("btnBilderT"), under: t("btnBilderU") });
   }
   if (DATA.smalltalk?.sporsmal?.length) {
-    punkter.push({ hash: "smalltalk", ikon: "💬", tittel: "Smalltalk", under: "Bryt isen med sidemannen" });
+    punkter.push({ hash: "smalltalk", ikon: "💬", tittel: t("btnSmalltalkT"), under: t("btnSmalltalkU") });
   }
   if (DATA.santusant?.pastander?.length) {
-    punkter.push({ hash: "santusant", ikon: "🤔", tittel: "Sant eller usant", under: "Hvor godt kjenner du brudeparet?" });
+    punkter.push({ hash: "santusant", ikon: "🤔", tittel: t("btnSantusantT"), under: t("btnSantusantU") });
   }
   if (DATA.vitser?.vitser?.length) {
-    punkter.push({ hash: "vitser", ikon: "😂", tittel: "Vitser", under: "En liten skrøne mellom rettene" });
+    punkter.push({ hash: "vitser", ikon: "😂", tittel: t("btnVitserT"), under: t("btnVitserU") });
   }
   for (const p of punkter) {
     const a = el(`<a class="stor-knapp" href="#/${p.hash}">
@@ -145,8 +368,8 @@ function visForside() {
     const kn = el(`<a class="stor-knapp kveld-knapp ${aapen ? "aapen" : "laast"}" href="#/kveld">
       <span class="ikon">${aapen ? "🍸" : "🔒"}</span>
       <span class="tekst">
-        <span class="tittel">${esc(DATA.kveld.tittel || "Kveldsmodus")}${aapen && !sett ? ' <span class="nytt-merke">Nytt!</span>' : ""}</span>
-        <span class="under">${aapen ? esc(DATA.kveld.undertittel || "Baren er åpen!") : "Åpner kl. 20:00 når baren åpner"}</span>
+        <span class="tittel">${esc(t("kveldTittel"))}${aapen && !sett ? ` <span class="nytt-merke">${esc(t("nytt"))}</span>` : ""}</span>
+        <span class="under">${aapen ? esc(t("kveldAapenUnder")) : esc(t("kveldLaastUnder"))}</span>
       </span>
       <span class="pil">›</span>
     </a>`);
@@ -157,12 +380,12 @@ function visForside() {
 
   // Banner hvis kvelden nettopp har åpnet og gjesten ikke har sett den ennå
   if (DATA.kveld && erKveldAapen() && !kveldErSett()) {
-    const banner = el(`<div class="kveld-banner">🍸 Baren er åpen – <b>Kveldsmodus</b> er låst opp! Trykk for å se hva som venter.</div>`);
+    const banner = el(`<div class="kveld-banner">${esc(t("kveldBanner"))}</div>`);
     banner.addEventListener("click", () => { location.hash = "#/kveld"; });
     app.append(banner);
   }
 
-  app.append(el(`<p class="forside-bunn">Vi gleder oss til å feire sammen med dere ♥</p>`));
+  app.append(el(`<p class="forside-bunn">${esc(t("forsideBunn"))}</p>`));
 }
 
 /* ---------- Bordkart + søk ---------- */
@@ -190,25 +413,25 @@ function naboTekst(person) {
 
   const deler = [];
   const sider = [over, under].filter(Boolean);
-  if (sider.length === 2) deler.push(`Ved siden av deg: <b>${esc(over)}</b> og <b>${esc(under)}</b>.`);
-  else if (sider.length === 1) deler.push(`Ved siden av deg: <b>${esc(sider[0])}</b>.`);
-  if (overfor) deler.push(`Rett overfor: <b>${esc(overfor)}</b>.`);
+  if (sider.length === 2) deler.push(t("vedSidenAv2", { a: `<b>${esc(over)}</b>`, b: `<b>${esc(under)}</b>` }));
+  else if (sider.length === 1) deler.push(t("vedSidenAv1", { a: `<b>${esc(sider[0])}</b>` }));
+  if (overfor) deler.push(t("rettOverfor", { x: `<b>${esc(overfor)}</b>` }));
   return deler.join(" ");
 }
 
 function visBordkart() {
   app.innerHTML = "";
-  app.append(topplinje("Finn min plass"));
+  app.append(topplinje(t("btnPlassT")));
 
   const sok = el(`<div class="sok-boks">
-    <input type="search" id="sokfelt" placeholder="Skriv navnet ditt …"
+    <input type="search" id="sokfelt" placeholder="${esc(t("sokPlaceholder"))}"
            autocomplete="off" autocapitalize="words" spellcheck="false"
-           enterkeyhint="search" aria-label="Søk etter navnet ditt">
+           enterkeyhint="search" aria-label="${esc(t("sokAria"))}">
     <span class="sok-ikon">🔍</span>
   </div>`);
   app.append(sok);
 
-  app.append(el(`<p class="tapp-hint">Tips: trykk på et navn for en liten overraskelse 🎉</p>`));
+  app.append(el(`<p class="tapp-hint">${esc(t("tappHint"))}</p>`));
 
   const treffboks = el(`<div id="treffboks"></div>`);
   app.append(treffboks);
@@ -247,7 +470,7 @@ function visBordkart() {
     }
 
     if (treff.length === 0) {
-      treffboks.append(el(`<p class="ingen-treff">Fant ingen med «${esc(felt.value)}». Prøv fornavnet, eller spør en av vertene.</p>`));
+      treffboks.append(el(`<p class="ingen-treff">${t("ingenTreff", { q: esc(felt.value) })}</p>`));
       return;
     }
 
@@ -257,7 +480,7 @@ function visBordkart() {
 
     if (unikeNavn.length > 1 && !valgtNavn) {
       // flere forskjellige navn matcher – vis kort valgliste
-      const boks = el(`<div class="treff"><p>Mente du noen av disse?</p><div class="velg-liste"></div></div>`);
+      const boks = el(`<div class="treff"><p>${esc(t("menteDu"))}</p><div class="velg-liste"></div></div>`);
       const liste = boks.querySelector(".velg-liste");
       unikeNavn.slice(0, 8).forEach(n => {
         const btn = el(`<button>${esc(n)}</button>`);
@@ -271,12 +494,12 @@ function visBordkart() {
     if (treff.length > 1) {
       // samme navn, flere personer/bord – la gjesten velge riktig bord
       const boks = el(`<div class="treff">
-        <p><b>${esc(treff[0].navn)}</b> finnes ved flere bord. Hvilket er ditt?</p>
+        <p>${t("flereBord", { navn: `<b>${esc(treff[0].navn)}</b>` })}</p>
         <div class="velg-liste"></div>
       </div>`);
       const liste = boks.querySelector(".velg-liste");
       treff.forEach(p => {
-        const btn = el(`<button>Bord ${p.bord.nummer} · ${esc(p.bord.navn)}</button>`);
+        const btn = el(`<button>${esc(t("bord"))} ${p.bord.nummer} · ${esc(p.bord.navn)}</button>`);
         btn.addEventListener("click", () => visTreff(p));
         liste.append(btn);
       });
@@ -290,9 +513,9 @@ function visBordkart() {
   function visTreff(p) {
     treffboks.innerHTML = "";
     const kort = el(`<div class="treff">
-      <p class="treff-bord">Bord ${p.bord.nummer} · ${esc(p.bord.navn)}</p>
+      <p class="treff-bord">${esc(t("bord"))} ${p.bord.nummer} · ${esc(p.bord.navn)}</p>
       <p>${naboTekst(p)}</p>
-      <p class="liten">Plassen din er markert nedenfor.</p>
+      <p class="liten">${esc(t("plassMarkert"))}</p>
     </div>`);
     treffboks.append(kort);
     fremhev(p);
@@ -318,7 +541,7 @@ function tegnAlleBord(container) {
     const enkel = A.length === 0 || B.length === 0;
     const seksjon = el(`<section class="bord ${b.hovedbord ? "hovedbord" : ""}" id="bord-${b.nummer}">
       <div class="bord-tittel-wrap">
-        <span class="bord-nr">Bord ${b.nummer}</span>
+        <span class="bord-nr">${esc(t("bord"))} ${b.nummer}</span>
         <h3 class="bord-tittel">${esc(b.navn)}</h3>
       </div>
     </section>`);
@@ -368,6 +591,7 @@ function fremhev(p) {
   const meg = finnPlassEl(p);
   if (!meg) return;
   meg.classList.add("deg");
+  meg.dataset.deg = t("deg");
 
   // marker naboer (over/under + overfor)
   const naboer = [
@@ -480,22 +704,22 @@ function moroPaaNavn(plate) {
 /* ---------- Meny ---------- */
 function visMeny() {
   app.innerHTML = "";
-  app.append(topplinje(DATA.meny?.tittel || "Meny"));
+  app.append(topplinje(tr(DATA.meny?.tittel) || t("btnMenyT")));
   if (!DATA.meny) {
-    app.append(el(`<div class="beskjed">Menyen er ikke klar ennå.</div>`));
+    app.append(el(`<div class="beskjed">${esc(t("komSnart"))}</div>`));
     return;
   }
   if (DATA.meny.undertittel) {
-    app.append(el(`<div class="seksjon-topp"><p class="under">${esc(DATA.meny.undertittel)}</p></div>`));
+    app.append(el(`<div class="seksjon-topp"><p class="under">${esc(tr(DATA.meny.undertittel))}</p></div>`));
   }
   for (const r of DATA.meny.retter || []) {
     const kort = el(`<div class="rett">
       <span class="r-ikon">${r.ikon || "•"}</span>
       <div>
-        <div class="r-type">${esc(r.type || "")}</div>
-        <div class="r-navn">${esc(r.navn || "")}</div>
-        <div class="r-besk">${esc(r.beskrivelse || "")}</div>
-        ${r.allergener ? `<div class="r-allergen">Allergener: ${esc(r.allergener)}</div>` : ""}
+        <div class="r-type">${esc(tr(r.type))}</div>
+        <div class="r-navn">${esc(tr(r.navn))}</div>
+        <div class="r-besk">${esc(tr(r.beskrivelse))}</div>
+        ${r.allergener ? `<div class="r-allergen">${esc(t("allergener"))} ${esc(tr(r.allergener))}</div>` : ""}
       </div>
     </div>`);
     app.append(kort);
@@ -505,21 +729,22 @@ function visMeny() {
 /* ---------- Program ---------- */
 function visProgram() {
   app.innerHTML = "";
-  app.append(topplinje(DATA.program?.tittel || "Program"));
+  app.append(topplinje(tr(DATA.program?.tittel) || t("btnProgramT")));
   if (!DATA.program) {
-    app.append(el(`<div class="beskjed">Programmet er ikke klart ennå.</div>`));
+    app.append(el(`<div class="beskjed">${esc(t("komSnart"))}</div>`));
     return;
   }
   if (DATA.program.undertittel) {
-    app.append(el(`<div class="seksjon-topp"><p class="under">${esc(DATA.program.undertittel)}</p></div>`));
+    app.append(el(`<div class="seksjon-topp"><p class="under">${esc(tr(DATA.program.undertittel))}</p></div>`));
   }
   const linje = el(`<div class="tidslinje"></div>`);
   for (const p of DATA.program.poster || []) {
+    const besk = tr(p.beskrivelse);
     const post = el(`<div class="post">
       <div class="p-tid">${esc(p.tid || "")}</div>
       <div class="p-innhold">
-        <div class="p-tittel">${p.ikon ? `<span>${p.ikon}</span>` : ""}<span>${esc(p.tittel || "")}</span></div>
-        ${p.beskrivelse ? `<div class="p-besk">${esc(p.beskrivelse)}</div>` : ""}
+        <div class="p-tittel">${p.ikon ? `<span>${p.ikon}</span>` : ""}<span>${esc(tr(p.tittel))}</span></div>
+        ${besk ? `<div class="p-besk">${esc(besk)}</div>` : ""}
       </div>
     </div>`);
     linje.append(post);
@@ -530,20 +755,18 @@ function visProgram() {
 /* ---------- Bilder ---------- */
 function visBilder() {
   app.innerHTML = "";
-  app.append(topplinje("Bilder"));
+  app.append(topplinje(t("btnBilderT")));
   const url = DATA.gjester.bryllup?.bilderUrl;
   if (!url) {
-    app.append(el(`<div class="beskjed">Fotoalbumet er ikke klart ennå.</div>`));
+    app.append(el(`<div class="beskjed">${esc(t("komSnart"))}</div>`));
     return;
   }
-  app.append(el(`<div class="seksjon-topp"><p class="under">Del minnene fra dagen</p></div>`));
+  app.append(el(`<div class="seksjon-topp"><p class="under">${esc(t("bilderUndertittel"))}</p></div>`));
   const kort = el(`<div class="bilder-kort">
     <div class="bilder-ikon">📷</div>
-    <p>Ta del i minnene! Åpne vårt felles fotoalbum for å <b>se bildene</b> som deles –
-       og gjerne <b>legg til dine egne</b>.</p>
-    <a class="album-knapp" href="${esc(url)}" target="_blank" rel="noopener noreferrer">Åpne fotoalbumet</a>
-    <p class="liten">Albumet åpnes i Google Foto. For å laste opp bilder må du være innlogget
-       med en Google-konto – alle med lenken kan se bildene.</p>
+    <p>${esc(t("bilderTekst"))}</p>
+    <a class="album-knapp" href="${esc(url)}" target="_blank" rel="noopener noreferrer">${esc(t("bilderKnapp"))}</a>
+    <p class="liten">${esc(t("bilderNote"))}</p>
   </div>`);
   app.append(kort);
 }
@@ -583,17 +806,17 @@ const trekkSmalltalk = lagTrekker(() => DATA.smalltalk?.sporsmal);
 
 function visSmalltalk() {
   app.innerHTML = "";
-  app.append(topplinje("Smalltalk"));
+  app.append(topplinje(t("btnSmalltalkT")));
   const alle = DATA.smalltalk?.sporsmal || [];
   if (!alle.length) {
-    app.append(el(`<div class="beskjed">Kommer snart …</div>`));
+    app.append(el(`<div class="beskjed">${esc(t("komSnart"))}</div>`));
     return;
   }
-  app.append(el(`<div class="seksjon-topp"><p class="under">${esc(DATA.smalltalk.undertittel || "Bryt isen – spør sidemannen!")}</p></div>`));
+  app.append(el(`<div class="seksjon-topp"><p class="under">${esc(t("smalltalkUnder"))}</p></div>`));
   const kort = el(`<div class="moro-kort">
     <div class="moro-emoji">💬</div>
     <p class="moro-tekst" id="moro-tekst"></p>
-    <button class="neste-knapp" id="moro-neste">Ny setning →</button>
+    <button class="neste-knapp" id="moro-neste">${esc(t("smalltalkNy"))}</button>
   </div>`);
   app.append(kort);
   const tekstEl = kort.querySelector("#moro-tekst");
@@ -612,17 +835,17 @@ const trekkVits = lagTrekker(() => DATA.vitser?.vitser);
 
 function visVitser() {
   app.innerHTML = "";
-  app.append(topplinje("Vitser"));
+  app.append(topplinje(t("btnVitserT")));
   const alle = DATA.vitser?.vitser || [];
   if (!alle.length) {
-    app.append(el(`<div class="beskjed">Kommer snart …</div>`));
+    app.append(el(`<div class="beskjed">${esc(t("komSnart"))}</div>`));
     return;
   }
-  app.append(el(`<div class="seksjon-topp"><p class="under">${esc(DATA.vitser.undertittel || "Trekk en vits!")}</p></div>`));
+  app.append(el(`<div class="seksjon-topp"><p class="under">${esc(t("vitserUnder"))}</p></div>`));
   const kort = el(`<div class="moro-kort">
     <div class="moro-emoji">😂</div>
     <p class="moro-tekst" id="moro-tekst"></p>
-    <button class="neste-knapp" id="moro-neste">Ny vits →</button>
+    <button class="neste-knapp" id="moro-neste">${esc(t("vitserNy"))}</button>
   </div>`);
   app.append(kort);
   const tekstEl = kort.querySelector("#moro-tekst");
@@ -641,20 +864,20 @@ const trekkPastand = lagTrekker(() => DATA.santusant?.pastander);
 
 function visSantUsant() {
   app.innerHTML = "";
-  app.append(topplinje("Sant eller usant"));
+  app.append(topplinje(t("btnSantusantT")));
   const alle = DATA.santusant?.pastander || [];
   if (!alle.length) {
-    app.append(el(`<div class="beskjed">Kommer snart …</div>`));
+    app.append(el(`<div class="beskjed">${esc(t("komSnart"))}</div>`));
     return;
   }
-  app.append(el(`<div class="seksjon-topp"><p class="under">${esc(DATA.santusant.undertittel || "Gjett – og vis svaret!")}</p></div>`));
+  app.append(el(`<div class="seksjon-topp"><p class="under">${esc(t("suUnder"))}</p></div>`));
   const kort = el(`<div class="moro-kort">
     <div class="moro-emoji">🤔</div>
     <p class="moro-tekst" id="su-pastand"></p>
     <div class="su-svar" id="su-svar" hidden></div>
     <div class="su-knapper">
-      <button class="neste-knapp lys" id="su-vis">Vis svar</button>
-      <button class="neste-knapp" id="su-neste">Ny påstand →</button>
+      <button class="neste-knapp lys" id="su-vis">${esc(t("suVisSvar"))}</button>
+      <button class="neste-knapp" id="su-neste">${esc(t("suNy"))}</button>
     </div>
   </div>`);
   app.append(kort);
@@ -678,7 +901,7 @@ function visSantUsant() {
     if (!gjeldende) return;
     const sant = gjeldende.svar === true;
     svarEl.innerHTML =
-      `<span class="su-merke ${sant ? "sant" : "usant"}">${sant ? "SANT" : "USANT"}</span>` +
+      `<span class="su-merke ${sant ? "sant" : "usant"}">${esc(sant ? t("suSant") : t("suUsant"))}</span>` +
       (gjeldende.forklaring ? `<p class="su-forklaring">${esc(gjeldende.forklaring)}</p>` : "");
     svarEl.hidden = false;
     visKnapp.hidden = true;
@@ -732,19 +955,17 @@ function startKveldvakt() {
 
 function visKveld() {
   app.innerHTML = "";
-  app.append(topplinje(DATA.kveld?.tittel || "Kveldsmodus"));
-  if (!DATA.kveld) { app.append(el(`<div class="beskjed">Kommer snart …</div>`)); return; }
+  app.append(topplinje(t("kveldTittel")));
+  if (!DATA.kveld) { app.append(el(`<div class="beskjed">${esc(t("komSnart"))}</div>`)); return; }
   if (!erKveldAapen()) { visKveldLaast(); return; }
 
   markerKveldSett();
-  if (DATA.kveld.undertittel) {
-    app.append(el(`<div class="seksjon-topp"><p class="under">${esc(DATA.kveld.undertittel)}</p></div>`));
-  }
+  app.append(el(`<div class="seksjon-topp"><p class="under">${esc(t("kveldUnder"))}</p></div>`));
 
   const faner = [];
-  if (DATA.kveld.oppdrag?.length) faner.push({ id: "oppdrag", navn: "Oppdrag", ikon: "🎯" });
-  if (DATA.kveld.smalltalk?.length) faner.push({ id: "smalltalk", navn: "Smalltalk", ikon: "💬" });
-  if (DATA.kveld.bingo?.ruter?.length) faner.push({ id: "bingo", navn: "Bingo", ikon: "🕺" });
+  if (DATA.kveld.oppdrag?.length) faner.push({ id: "oppdrag", navn: t("fanOppdrag"), ikon: "🎯" });
+  if (DATA.kveld.smalltalk?.length) faner.push({ id: "smalltalk", navn: t("fanSmalltalk"), ikon: "💬" });
+  if (DATA.kveld.bingo?.ruter?.length) faner.push({ id: "bingo", navn: t("fanBingo"), ikon: "🕺" });
 
   const fanerad = el(`<div class="faner"></div>`);
   const innhold = el(`<div id="kveld-innhold"></div>`);
@@ -758,8 +979,8 @@ function visKveld() {
 
   function velgFane(id) {
     [...fanerad.children].forEach((k) => k.classList.toggle("aktiv", k.dataset.id === id));
-    if (id === "oppdrag") tegnKveldTrekk(innhold, "🎯", "Nytt oppdrag →", trekkKveldOppdrag);
-    else if (id === "smalltalk") tegnKveldTrekk(innhold, "💬", "Nytt spørsmål →", trekkKveldSmalltalk);
+    if (id === "oppdrag") tegnKveldTrekk(innhold, "🎯", t("kveldNyOppdrag"), trekkKveldOppdrag);
+    else if (id === "smalltalk") tegnKveldTrekk(innhold, "💬", t("kveldNySporsmal"), trekkKveldSmalltalk);
     else if (id === "bingo") tegnBingo(innhold);
   }
   if (faner.length) velgFane(faner[0].id);
@@ -787,8 +1008,8 @@ function tegnKveldTrekk(container, emoji, knappTekst, trekker) {
 function visKveldLaast() {
   const boks = el(`<div class="kveld-laast">
     <div class="laas-ikon">🔒</div>
-    <p class="laast-tittel">Kveldsmodus åpner kl. 20:00</p>
-    <p class="laast-under">Når baren åpner, låses noe nytt og morsomt opp her. Kom tilbake da!</p>
+    <p class="laast-tittel">${esc(t("kveldLaastTittel"))}</p>
+    <p class="laast-under">${esc(t("kveldLaastUnder2"))}</p>
     <p class="nedtelling" id="nedtelling"></p>
   </div>`);
   app.append(boks);
@@ -798,10 +1019,10 @@ function visKveldLaast() {
     if (maal === null) { ned.textContent = ""; return; }
     const diff = maal - Date.now();
     if (diff <= 0) { visKveld(); return; }
-    const t = Math.floor(diff / 3600000);
+    const tim = Math.floor(diff / 3600000);
     const m = Math.floor((diff % 3600000) / 60000);
     const s = Math.floor((diff % 60000) / 1000);
-    ned.textContent = `Åpner om ${t}t ${String(m).padStart(2, "0")}m ${String(s).padStart(2, "0")}s`;
+    ned.textContent = t("aapnerOm", { t: tim, m: String(m).padStart(2, "0"), s: String(s).padStart(2, "0") });
   };
   oppdater();
   const iv = setInterval(() => {
@@ -843,15 +1064,15 @@ function tegnBingo(container) {
   let merker = bingoMerker();
   let bingoVist = erBingo(merker);
 
-  const info = el(`<p class="bingo-info">${esc(DATA.kveld.bingo.undertittel || "")}</p>`);
+  const info = el(`<p class="bingo-info">${esc(t("bingoInstr"))}</p>`);
   const grid = el(`<div class="bingo-grid"></div>`);
   const status = el(`<div class="bingo-status" id="bingo-status"></div>`);
-  const nullstill = el(`<button class="neste-knapp lys" id="bingo-null">Nullstill brettet</button>`);
+  const nullstill = el(`<button class="neste-knapp lys" id="bingo-null">${esc(t("bingoNullstill"))}</button>`);
   container.append(info, grid, status, nullstill);
 
   const oppdaterStatus = () => {
-    if (erBingo(merker)) status.innerHTML = `<span class="bingo-rop">BINGO! 🎉</span>`;
-    else status.textContent = `${merker.filter(Boolean).length} av 9 krysset av`;
+    if (erBingo(merker)) status.innerHTML = `<span class="bingo-rop">${esc(t("bingoRop"))}</span>`;
+    else status.textContent = t("bingoStatus", { n: merker.filter(Boolean).length });
   };
   const tegnCeller = () => {
     grid.innerHTML = "";

@@ -23,8 +23,18 @@ UT_FIL = os.path.join(HER, "data", "gjester.json")
 # ---- Rediger disse for aa endre forsidetekst ------------------------------
 BRYLLUP = {
     "par": "Julie & Endre",          # <-- BEKREFT/ENDRE brudeparets navn
-    "dato": "15. august 2026",
-    "hilsen": "Velkommen til feiring!",
+    "dato": {
+        "no": "15. august 2026",
+        "en": "15 August 2026",
+        "de": "15. August 2026",
+        "es": "15 de agosto de 2026",
+    },
+    "hilsen": {
+        "no": "Velkommen til feiring!",
+        "en": "Welcome to the celebration!",
+        "de": "Willkommen zur Feier!",
+        "es": "¡Bienvenidos a la celebración!",
+    },
     "bilderUrl": "https://photos.google.com/share/AF1QipNV5mkBwotKZ8-XSeC5paGjq8tsmBY_xBfPu8C394YWo4hVYZl1eEQVs6TMHbvkGw?key=TU9zR3RZZHAtRGN1ck1uakFldk9WNU92OEJaTGpn",
     "kveldLaasOpp": "2026-08-15T20:00:00+02:00",
 }

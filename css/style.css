@@ -45,6 +45,43 @@ body {
   padding: 0 18px calc(48px + env(safe-area-inset-bottom));
 }
 
+/* ---------- Språkvelger ---------- */
+.sprakbar {
+  position: fixed;
+  top: calc(8px + env(safe-area-inset-top));
+  right: calc(8px + env(safe-area-inset-right));
+  z-index: 60;
+  display: flex;
+  gap: 2px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  padding: 4px;
+  border-radius: 999px;
+  box-shadow: var(--skygge);
+}
+.sprakbar button {
+  appearance: none;
+  border: none;
+  background: transparent;
+  font-size: 18px;
+  line-height: 1;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  cursor: pointer;
+  opacity: 0.5;
+  filter: saturate(0.6);
+  transition: opacity .15s ease, transform .15s ease, background .15s ease;
+}
+.sprakbar button:hover { opacity: 0.85; }
+.sprakbar button.aktiv {
+  opacity: 1;
+  filter: none;
+  background: #eaf3fb;
+  transform: scale(1.05);
+}
+
 /* ---------- Topplinje (på undersider) ---------- */
 .topp {
   display: flex;
@@ -397,7 +434,7 @@ body {
   position: relative;
 }
 .plass.deg::after {
-  content: "Deg";
+  content: attr(data-deg);
   position: absolute;
   top: -9px; right: -6px;
   background: var(--gull);
