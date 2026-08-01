@@ -211,6 +211,20 @@ body {
   color: var(--navy-myk);
   font-size: 0.82rem;
 }
+.diskret-lenke {
+  display: block;
+  text-align: center;
+  margin: 18px auto 4px;
+  color: var(--navy-myk);
+  opacity: 0.55;
+  font-size: 0.8rem;
+  text-decoration: none;
+  letter-spacing: 0.02em;
+  transition: opacity .15s ease;
+}
+.diskret-lenke::before { content: "· "; }
+.diskret-lenke::after { content: " ·"; }
+.diskret-lenke:hover { opacity: 0.9; text-decoration: underline; }
 
 /* ---------- Søk ---------- */
 .sok-boks {

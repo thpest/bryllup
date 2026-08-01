@@ -6,7 +6,7 @@
 
 const app = document.getElementById("app");
 
-const DATA = { gjester: null, meny: null, program: null, smalltalk: null, vitser: null, santusant: null, utmerkelser: null, hilsener: null, kveld: null };
+const DATA = { gjester: null, meny: null, program: null, smalltalk: null, vitser: null, santusant: null, utmerkelser: null, hilsener: null, kveld: null, bjornolav: null };
 
 /* ---------- Språk (i18n) ---------- */
 let SPRAK = "no";
@@ -254,7 +254,7 @@ async function hentJSON(sti) {
 /* ---------- Oppstart ---------- */
 async function start() {
   try {
-    const [gjester, meny, program, smalltalk, vitser, santusant, utmerkelser, hilsener, kveld] = await Promise.all([
+    const [gjester, meny, program, smalltalk, vitser, santusant, utmerkelser, hilsener, kveld, bjornolav] = await Promise.all([
       hentJSON("data/gjester.json"),
       hentJSON("data/meny.json").catch(() => null),
       hentJSON("data/program.json").catch(() => null),
@@ -264,6 +264,7 @@ async function start() {
       hentJSON("data/utmerkelser.json").catch(() => null),
       hentJSON("data/hilsener.json").catch(() => null),
       hentJSON("data/kveld.json").catch(() => null),
+      hentJSON("data/bjornolav.json").catch(() => null),
     ]);
     DATA.gjester = gjester;
     DATA.meny = meny;
@@ -274,6 +275,7 @@ async function start() {
     DATA.utmerkelser = utmerkelser;
     DATA.hilsener = hilsener;
     DATA.kveld = kveld;
+    DATA.bjornolav = bjornolav;
     startKveldvakt();
     document.documentElement.lang = SPRAK;
     byggSprakbar();
@@ -303,6 +305,7 @@ function ruter() {
   else if (h === "vitser") visVitser();
   else if (h === "santusant") visSantUsant();
   else if (h === "kveld") visKveld();
+  else if (h === "bjornolav") visBjornOlav();
   else visForside();
   app.classList.add("fade-inn");
   window.scrollTo(0, 0);
@@ -386,6 +389,12 @@ function visForside() {
   }
 
   app.append(el(`<p class="forside-bunn">${esc(t("forsideBunn"))}</p>`));
+
+  // Diskré «easter egg»-lenke dedikert til familievennen Bjørn Olav
+  if (DATA.bjornolav?.sporsmal?.length) {
+    const lenke = el(`<a class="diskret-lenke" href="#/bjornolav">${esc(DATA.bjornolav.tittel || "Spør Bjørn Olav")}</a>`);
+    app.append(lenke);
+  }
 }
 
 /* ---------- Bordkart + søk ---------- */
@@ -918,6 +927,36 @@ function visSantUsant() {
 /* ---------- Kveldsmodus (låses opp kl. 20:00) ---------- */
 const trekkKveldOppdrag = lagTrekker(() => DATA.kveld?.oppdrag);
 const trekkKveldSmalltalk = lagTrekker(() => DATA.kveld?.smalltalk);
+const trekkBjornOlav = lagTrekker(() => DATA.bjornolav?.sporsmal);
+
+/* ---------- Spør Bjørn Olav (diskré dedikasjon) ---------- */
+function visBjornOlav() {
+  app.innerHTML = "";
+  app.append(topplinje(DATA.bjornolav?.tittel || "Spør Bjørn Olav"));
+  const alle = DATA.bjornolav?.sporsmal || [];
+  if (!alle.length) {
+    app.append(el(`<div class="beskjed">${esc(t("komSnart"))}</div>`));
+    return;
+  }
+  if (DATA.bjornolav.undertittel) {
+    app.append(el(`<div class="seksjon-topp"><p class="under">${esc(DATA.bjornolav.undertittel)}</p></div>`));
+  }
+  const kort = el(`<div class="moro-kort">
+    <div class="moro-emoji">😄</div>
+    <p class="moro-tekst" id="moro-tekst"></p>
+    <button class="neste-knapp" id="moro-neste">Nytt spørsmål →</button>
+  </div>`);
+  app.append(kort);
+  const tekstEl = kort.querySelector("#moro-tekst");
+  const vis = () => {
+    tekstEl.textContent = trekkBjornOlav();
+    tekstEl.classList.remove("fade-inn");
+    void tekstEl.offsetWidth;
+    tekstEl.classList.add("fade-inn");
+  };
+  kort.querySelector("#moro-neste").addEventListener("click", vis);
+  vis();
+}
 
 // Forhåndsvisning: legg til ?kveld=1 i adressen for å låse opp uansett klokke
 function erKveldForhaandsvis() {
