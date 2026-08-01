@@ -449,8 +449,8 @@ body {
   .album-knapp:hover { transform: translateY(-2px); box-shadow: var(--skygge-loft); }
 }
 
-/* ---------- Smalltalk ---------- */
-.smalltalk-kort {
+/* ---------- Moro-kort (Smalltalk / Vitser / Sant-usant) ---------- */
+.moro-kort {
   background: linear-gradient(180deg, #ffffff, #f5faff);
   border: 1px solid var(--gull-myk);
   border-radius: var(--radius);
@@ -464,16 +464,16 @@ body {
   justify-content: center;
   gap: 10px;
 }
-.smalltalk-kort .st-emoji { font-size: 40px; line-height: 1; }
-.smalltalk-kort .st-spm {
+.moro-kort .moro-emoji { font-size: 40px; line-height: 1; }
+.moro-kort .moro-tekst {
   font-family: var(--serif);
-  font-size: 1.7rem;
+  font-size: 1.6rem;
   font-weight: 600;
-  line-height: 1.25;
+  line-height: 1.28;
   color: var(--navy);
   margin: 6px auto 4px;
-  max-width: 18em;
-  min-height: 2.5em;
+  max-width: 19em;
+  min-height: 2.4em;
   display: flex; align-items: center; justify-content: center;
 }
 .neste-knapp {
@@ -491,9 +491,33 @@ body {
   box-shadow: var(--skygge);
   transition: transform .15s ease, box-shadow .15s ease;
 }
+.neste-knapp.lys {
+  background: #eaf3fb;
+  color: var(--blaa-dyp);
+}
 .neste-knapp:active { transform: translateY(1px) scale(0.99); }
 @media (hover: hover) {
   .neste-knapp:hover { transform: translateY(-2px); box-shadow: var(--skygge-loft); }
+}
+.su-knapper { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+.su-svar { margin: 4px 0 2px; }
+.su-merke {
+  display: inline-block;
+  font-family: var(--sans);
+  font-weight: 700;
+  font-size: 1.05rem;
+  letter-spacing: 0.1em;
+  padding: 8px 22px;
+  border-radius: 999px;
+  color: #fff;
+}
+.su-merke.sant { background: linear-gradient(135deg, #5bb98b, #3d8f66); }
+.su-merke.usant { background: linear-gradient(135deg, #d98a8a, #b25b5b); }
+.su-forklaring {
+  color: var(--navy-myk);
+  font-size: 0.95rem;
+  margin: 12px auto 0;
+  max-width: 22em;
 }
 
 /* ---------- Feil / laster ---------- */

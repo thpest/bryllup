@@ -6,7 +6,7 @@
 
 const app = document.getElementById("app");
 
-const DATA = { gjester: null, meny: null, program: null, smalltalk: null };
+const DATA = { gjester: null, meny: null, program: null, smalltalk: null, vitser: null, santusant: null };
 
 /* ---------- Hjelpere ---------- */
 function el(html) {
@@ -33,16 +33,20 @@ async function hentJSON(sti) {
 /* ---------- Oppstart ---------- */
 async function start() {
   try {
-    const [gjester, meny, program, smalltalk] = await Promise.all([
+    const [gjester, meny, program, smalltalk, vitser, santusant] = await Promise.all([
       hentJSON("data/gjester.json"),
       hentJSON("data/meny.json").catch(() => null),
       hentJSON("data/program.json").catch(() => null),
       hentJSON("data/smalltalk.json").catch(() => null),
+      hentJSON("data/vitser.json").catch(() => null),
+      hentJSON("data/sant_usant.json").catch(() => null),
     ]);
     DATA.gjester = gjester;
     DATA.meny = meny;
     DATA.program = program;
     DATA.smalltalk = smalltalk;
+    DATA.vitser = vitser;
+    DATA.santusant = santusant;
     document.title = "Bryllup · " + (gjester.bryllup?.par || "");
     window.addEventListener("hashchange", ruter);
     ruter();
@@ -66,6 +70,8 @@ function ruter() {
   else if (h === "program") visProgram();
   else if (h === "bilder") visBilder();
   else if (h === "smalltalk") visSmalltalk();
+  else if (h === "vitser") visVitser();
+  else if (h === "santusant") visSantUsant();
   else visForside();
   app.classList.add("fade-inn");
   window.scrollTo(0, 0);
@@ -105,6 +111,12 @@ function visForside() {
   }
   if (DATA.smalltalk?.sporsmal?.length) {
     punkter.push({ hash: "smalltalk", ikon: "💬", tittel: "Smalltalk", under: "Bryt isen med sidemannen" });
+  }
+  if (DATA.santusant?.pastander?.length) {
+    punkter.push({ hash: "santusant", ikon: "🤔", tittel: "Sant eller usant", under: "Hvor godt kjenner du brudeparet?" });
+  }
+  if (DATA.vitser?.vitser?.length) {
+    punkter.push({ hash: "vitser", ikon: "😂", tittel: "Vitser", under: "En liten skrøne mellom rettene" });
   }
   for (const p of punkter) {
     const a = el(`<a class="stor-knapp" href="#/${p.hash}">
@@ -403,10 +415,7 @@ function visBilder() {
   app.append(kort);
 }
 
-/* ---------- Smalltalk ---------- */
-let smalltalkPose = [];   // "pose" vi trekker fra – tømmes før den fylles på nytt
-let sisteSpm = null;
-
+/* ---------- Tilfeldig trekking (delt av Smalltalk/Vitser/Sant-usant) ---------- */
 function stokk(arr) {
   const a = arr.slice();
   for (let i = a.length - 1; i > 0; i--) {
@@ -416,21 +425,28 @@ function stokk(arr) {
   return a;
 }
 
-function nesteSmalltalk() {
-  const alle = DATA.smalltalk?.sporsmal || [];
-  if (alle.length === 0) return "";
-  if (alle.length === 1) return alle[0];
-  if (smalltalkPose.length === 0) {
-    smalltalkPose = stokk(alle);
-    // unngå at det første vi trekker er identisk med forrige viste
-    if (smalltalkPose[smalltalkPose.length - 1] === sisteSpm) {
-      [smalltalkPose[0], smalltalkPose[smalltalkPose.length - 1]] =
-        [smalltalkPose[smalltalkPose.length - 1], smalltalkPose[0]];
+// Lager en trekker som går gjennom hele lista i tilfeldig rekkefølge
+// før noe gjentas, og unngår at samme kommer to ganger på rad.
+function lagTrekker(hentListe) {
+  let pose = [];
+  let siste = null;
+  return function neste() {
+    const alle = hentListe() || [];
+    if (alle.length === 0) return null;
+    if (alle.length === 1) return alle[0];
+    if (pose.length === 0) {
+      pose = stokk(alle);
+      if (pose[pose.length - 1] === siste) {
+        [pose[0], pose[pose.length - 1]] = [pose[pose.length - 1], pose[0]];
+      }
     }
-  }
-  sisteSpm = smalltalkPose.pop();
-  return sisteSpm;
+    siste = pose.pop();
+    return siste;
+  };
 }
+
+/* ---------- Smalltalk ---------- */
+const trekkSmalltalk = lagTrekker(() => DATA.smalltalk?.sporsmal);
 
 function visSmalltalk() {
   app.innerHTML = "";
@@ -441,21 +457,106 @@ function visSmalltalk() {
     return;
   }
   app.append(el(`<div class="seksjon-topp"><p class="under">${esc(DATA.smalltalk.undertittel || "Bryt isen – spør sidemannen!")}</p></div>`));
-  const kort = el(`<div class="smalltalk-kort">
-    <div class="st-emoji">💬</div>
-    <p class="st-spm" id="st-spm"></p>
-    <button class="neste-knapp" id="st-neste">Ny setning →</button>
+  const kort = el(`<div class="moro-kort">
+    <div class="moro-emoji">💬</div>
+    <p class="moro-tekst" id="moro-tekst"></p>
+    <button class="neste-knapp" id="moro-neste">Ny setning →</button>
   </div>`);
   app.append(kort);
-  const spmEl = kort.querySelector("#st-spm");
+  const tekstEl = kort.querySelector("#moro-tekst");
   const vis = () => {
-    spmEl.textContent = nesteSmalltalk();
-    spmEl.classList.remove("fade-inn");
-    void spmEl.offsetWidth;
-    spmEl.classList.add("fade-inn");
+    tekstEl.textContent = trekkSmalltalk();
+    tekstEl.classList.remove("fade-inn");
+    void tekstEl.offsetWidth;
+    tekstEl.classList.add("fade-inn");
   };
-  kort.querySelector("#st-neste").addEventListener("click", vis);
+  kort.querySelector("#moro-neste").addEventListener("click", vis);
   vis();
+}
+
+/* ---------- Vitser ---------- */
+const trekkVits = lagTrekker(() => DATA.vitser?.vitser);
+
+function visVitser() {
+  app.innerHTML = "";
+  app.append(topplinje("Vitser"));
+  const alle = DATA.vitser?.vitser || [];
+  if (!alle.length) {
+    app.append(el(`<div class="beskjed">Kommer snart …</div>`));
+    return;
+  }
+  app.append(el(`<div class="seksjon-topp"><p class="under">${esc(DATA.vitser.undertittel || "Trekk en vits!")}</p></div>`));
+  const kort = el(`<div class="moro-kort">
+    <div class="moro-emoji">😂</div>
+    <p class="moro-tekst" id="moro-tekst"></p>
+    <button class="neste-knapp" id="moro-neste">Ny vits →</button>
+  </div>`);
+  app.append(kort);
+  const tekstEl = kort.querySelector("#moro-tekst");
+  const vis = () => {
+    tekstEl.textContent = trekkVits();
+    tekstEl.classList.remove("fade-inn");
+    void tekstEl.offsetWidth;
+    tekstEl.classList.add("fade-inn");
+  };
+  kort.querySelector("#moro-neste").addEventListener("click", vis);
+  vis();
+}
+
+/* ---------- Sant eller usant ---------- */
+const trekkPastand = lagTrekker(() => DATA.santusant?.pastander);
+
+function visSantUsant() {
+  app.innerHTML = "";
+  app.append(topplinje("Sant eller usant"));
+  const alle = DATA.santusant?.pastander || [];
+  if (!alle.length) {
+    app.append(el(`<div class="beskjed">Kommer snart …</div>`));
+    return;
+  }
+  app.append(el(`<div class="seksjon-topp"><p class="under">${esc(DATA.santusant.undertittel || "Gjett – og vis svaret!")}</p></div>`));
+  const kort = el(`<div class="moro-kort">
+    <div class="moro-emoji">🤔</div>
+    <p class="moro-tekst" id="su-pastand"></p>
+    <div class="su-svar" id="su-svar" hidden></div>
+    <div class="su-knapper">
+      <button class="neste-knapp lys" id="su-vis">Vis svar</button>
+      <button class="neste-knapp" id="su-neste">Ny påstand →</button>
+    </div>
+  </div>`);
+  app.append(kort);
+
+  const pastandEl = kort.querySelector("#su-pastand");
+  const svarEl = kort.querySelector("#su-svar");
+  const visKnapp = kort.querySelector("#su-vis");
+  let gjeldende = null;
+
+  const nyPastand = () => {
+    gjeldende = trekkPastand();
+    pastandEl.textContent = gjeldende ? gjeldende.pastand : "";
+    svarEl.hidden = true;
+    svarEl.innerHTML = "";
+    visKnapp.hidden = false;
+    pastandEl.classList.remove("fade-inn");
+    void pastandEl.offsetWidth;
+    pastandEl.classList.add("fade-inn");
+  };
+  const visSvar = () => {
+    if (!gjeldende) return;
+    const sant = gjeldende.svar === true;
+    svarEl.innerHTML =
+      `<span class="su-merke ${sant ? "sant" : "usant"}">${sant ? "SANT" : "USANT"}</span>` +
+      (gjeldende.forklaring ? `<p class="su-forklaring">${esc(gjeldende.forklaring)}</p>` : "");
+    svarEl.hidden = false;
+    visKnapp.hidden = true;
+    svarEl.classList.remove("fade-inn");
+    void svarEl.offsetWidth;
+    svarEl.classList.add("fade-inn");
+  };
+
+  visKnapp.addEventListener("click", visSvar);
+  kort.querySelector("#su-neste").addEventListener("click", nyPastand);
+  nyPastand();
 }
 
 start();
