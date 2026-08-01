@@ -3,39 +3,81 @@
   "undertittel": "Slik blir dagen",
   "poster": [
     {
-      "tid": "15:00",
-      "tittel": "Ankomst og velkomst",
-      "beskrivelse": "Gjestene tar imot et glass, og vi finner plassene våre.",
+      "tid": "14.30",
+      "tittel": "Gjestene ankommer",
+      "beskrivelse": "Fingermat og bobler serveres – baren er åpen.",
       "ikon": "🥂"
     },
     {
-      "tid": "16:00",
-      "tittel": "Middag",
-      "beskrivelse": "Vi setter oss til bords for festmiddag.",
-      "ikon": "🍽️"
+      "tid": "16.00",
+      "tittel": "Brudeparet ankommer",
+      "beskrivelse": "Vi skåler i bobler, og bryllupskaken serveres.",
+      "ikon": "💍"
     },
     {
-      "tid": "18:00",
-      "tittel": "Taler og innslag",
-      "beskrivelse": "Toastmaster loser oss gjennom taler og overraskelser.",
+      "tid": "17.00",
+      "tittel": "Bordsetting",
+      "beskrivelse": "Vi finner plassene våre.",
+      "ikon": "🪑"
+    },
+    {
+      "tid": "17.15",
+      "tittel": "Velkomst",
+      "beskrivelse": "Toastmaster ønsker velkommen og presenterer mat og drikke.",
       "ikon": "🎤"
     },
     {
-      "tid": "20:00",
-      "tittel": "Kake og kaffe",
-      "beskrivelse": "Bryllupskaken skjæres, og kaffen serveres.",
-      "ikon": "🍰"
+      "tid": "17.20",
+      "tittel": "Forrett – Skagen toast",
+      "beskrivelse": "Tale ved bruden og brudgommen.",
+      "ikon": "🦐"
     },
     {
-      "tid": "21:00",
-      "tittel": "Brudevals og dans",
-      "beskrivelse": "Første dans, og deretter åpnes dansegulvet for alle.",
-      "ikon": "💃"
+      "tid": "18.20",
+      "tittel": "Hovedrett – filet av hjort",
+      "beskrivelse": "Tale ved foreldrene.",
+      "ikon": "🦌"
     },
     {
-      "tid": "23:00",
-      "tittel": "Nattmat",
-      "beskrivelse": "Litt å styrke seg på utover kvelden.",
+      "tid": "19.00",
+      "tittel": "Tale ved forlover",
+      "beskrivelse": "",
+      "ikon": "🥂"
+    },
+    {
+      "tid": "19.40",
+      "tittel": "Dessert – crème brûlée",
+      "beskrivelse": "Flere taler.",
+      "ikon": "🍮"
+    },
+    {
+      "tid": "20.00",
+      "tittel": "Baren åpner",
+      "beskrivelse": "",
+      "ikon": "🍸"
+    },
+    {
+      "tid": "21.30",
+      "tittel": "Kake, kaffe og avec",
+      "beskrivelse": "",
+      "ikon": "☕"
+    },
+    {
+      "tid": "00.00",
+      "tittel": "Nattmat – pølser",
+      "beskrivelse": "",
+      "ikon": "🌭"
+    },
+    {
+      "tid": "01.30",
+      "tittel": "Siste servering i baren",
+      "beskrivelse": "",
+      "ikon": "🕐"
+    },
+    {
+      "tid": "02.00",
+      "tittel": "Takk for i kveld",
+      "beskrivelse": "Festen avsluttes.",
       "ikon": "🌙"
     }
   ]
