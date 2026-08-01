@@ -417,7 +417,7 @@ function visUtmerkelse(plate) {
   boble.className = "utmerkelse";
   boble.textContent = liste[Math.floor(Math.random() * liste.length)];
   plate.appendChild(boble);
-  setTimeout(() => boble.remove(), 2100);
+  setTimeout(() => boble.remove(), 3100);
 }
 
 function moroPaaNavn(plate) {
