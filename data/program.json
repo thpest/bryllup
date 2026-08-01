@@ -1,0 +1,42 @@
+{
+  "tittel": "Program",
+  "undertittel": "Slik blir dagen",
+  "poster": [
+    {
+      "tid": "15:00",
+      "tittel": "Ankomst og velkomst",
+      "beskrivelse": "Gjestene tar imot et glass, og vi finner plassene våre.",
+      "ikon": "🥂"
+    },
+    {
+      "tid": "16:00",
+      "tittel": "Middag",
+      "beskrivelse": "Vi setter oss til bords for festmiddag.",
+      "ikon": "🍽️"
+    },
+    {
+      "tid": "18:00",
+      "tittel": "Taler og innslag",
+      "beskrivelse": "Toastmaster loser oss gjennom taler og overraskelser.",
+      "ikon": "🎤"
+    },
+    {
+      "tid": "20:00",
+      "tittel": "Kake og kaffe",
+      "beskrivelse": "Bryllupskaken skjæres, og kaffen serveres.",
+      "ikon": "🍰"
+    },
+    {
+      "tid": "21:00",
+      "tittel": "Brudevals og dans",
+      "beskrivelse": "Første dans, og deretter åpnes dansegulvet for alle.",
+      "ikon": "💃"
+    },
+    {
+      "tid": "23:00",
+      "tittel": "Nattmat",
+      "beskrivelse": "Litt å styrke seg på utover kvelden.",
+      "ikon": "🌙"
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "tittel": "Meny",
+  "undertittel": "Middagen serveres i festsalen",
+  "retter": [
+    {
+      "type": "Velkomst",
+      "navn": "Et glass ved ankomst",
+      "beskrivelse": "Musserende drikke og en liten appetittvekker.",
+      "allergener": "",
+      "ikon": "🥂"
+    },
+    {
+      "type": "Forrett",
+      "navn": "Forrett kommer",
+      "beskrivelse": "Beskrivelse av forretten legges inn når menyen er bestemt.",
+      "allergener": "",
+      "ikon": "🌿"
+    },
+    {
+      "type": "Hovedrett",
+      "navn": "Hovedrett kommer",
+      "beskrivelse": "Beskrivelse av hovedrett og tilbehør legges inn senere.",
+      "allergener": "",
+      "ikon": "🍽️"
+    },
+    {
+      "type": "Dessert",
+      "navn": "Dessert kommer",
+      "beskrivelse": "Beskrivelse av desserten legges inn når den er klar.",
+      "allergener": "",
+      "ikon": "🍰"
+    },
+    {
+      "type": "Kaffe",
+      "navn": "Kaffe og noe godt",
+      "beskrivelse": "Kaffe og te serveres etter middagen.",
+      "allergener": "",
+      "ikon": "☕"
+    }
+  ]
+}

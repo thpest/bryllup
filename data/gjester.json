@@ -1,0 +1,118 @@
+{
+  "bryllup": {
+    "par": "Julie & Endre",
+    "dato": "15. august 2026",
+    "hilsen": "Velkommen til feiring!"
+  },
+  "bord": [
+    {
+      "nummer": 0,
+      "navn": "Brudeslør",
+      "hovedbord": true,
+      "rader": {
+        "A": [
+          "Thomas",
+          "Julie",
+          "Endre",
+          "Jørgen"
+        ],
+        "B": [
+          "Olga",
+          "Tor Magne",
+          "Trine Lise",
+          "Merete"
+        ]
+      }
+    },
+    {
+      "nummer": 1,
+      "navn": "Sommereng",
+      "hovedbord": false,
+      "rader": {
+        "A": [
+          "Damian",
+          "Silje",
+          "Nora",
+          "Signar",
+          "Niklas",
+          "Benjamin",
+          "Hedda",
+          "Jonathan",
+          "Henriette",
+          "Sara",
+          "Anders",
+          "Mattis"
+        ],
+        "B": [
+          "Adrian",
+          "Lise",
+          "Julie",
+          "Jarl",
+          "Håkon",
+          "Agnes",
+          "Martine",
+          "Christopher",
+          "Hanne",
+          "Christopher",
+          "Emmeli",
+          "Caroline"
+        ]
+      }
+    },
+    {
+      "nummer": 2,
+      "navn": "Himmelblå",
+      "hovedbord": false,
+      "rader": {
+        "A": [
+          "Runi",
+          "Bjørn Olav",
+          "Rune",
+          "Bodil",
+          "Inger Johanne",
+          "Helene",
+          "Stig",
+          "Mats",
+          "Mari",
+          "Live",
+          "Martin"
+        ],
+        "B": [
+          "Anne Beate",
+          "Egil",
+          "Andreas",
+          "Ingunn",
+          "Eirik",
+          "Kristin",
+          "Line",
+          "Petter-Martin",
+          "Helge",
+          "Malene",
+          "Anne-Kine",
+          "Joachim"
+        ]
+      }
+    },
+    {
+      "nummer": 3,
+      "navn": "Havblikk",
+      "hovedbord": false,
+      "rader": {
+        "A": [
+          "Leonard",
+          "Elisabeth",
+          "Milla",
+          "Alex",
+          "Teodor"
+        ],
+        "B": [
+          "Markus",
+          "Marthe",
+          "Ari",
+          "Peter",
+          "Andreas"
+        ]
+      }
+    }
+  ]
+}
