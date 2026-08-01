@@ -11,24 +11,24 @@
     },
     {
       "type": "Forrett",
-      "navn": "Forrett kommer",
-      "beskrivelse": "Beskrivelse av forretten legges inn når menyen er bestemt.",
+      "navn": "Skagen toast",
+      "beskrivelse": "Skagen toast med et utvalg av skalldyr og sesongens beste grønnsaker, servert på smørstekt toast. Toppes med lakserogn og rotchips.",
       "allergener": "",
-      "ikon": "🌿"
+      "ikon": "🦐"
     },
     {
       "type": "Hovedrett",
-      "navn": "Hovedrett kommer",
-      "beskrivelse": "Beskrivelse av hovedrett og tilbehør legges inn senere.",
+      "navn": "Filet av hjort",
+      "beskrivelse": "Filet av hjort, smørstekt sopp, glaserte rotgrønnsaker og rotpuré med cognacsaus og ristet sort pepper. Serveres med rørte tyttebær.",
       "allergener": "",
-      "ikon": "🍽️"
+      "ikon": "🦌"
     },
     {
       "type": "Dessert",
-      "navn": "Dessert kommer",
-      "beskrivelse": "Beskrivelse av desserten legges inn når den er klar.",
+      "navn": "Crème brûlée",
+      "beskrivelse": "Crème brûlée servert med friske bær.",
       "allergener": "",
-      "ikon": "🍰"
+      "ikon": "🍮"
     },
     {
       "type": "Kaffe",
