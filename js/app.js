@@ -6,7 +6,7 @@
 
 const app = document.getElementById("app");
 
-const DATA = { gjester: null, meny: null, program: null, smalltalk: null, vitser: null, santusant: null };
+const DATA = { gjester: null, meny: null, program: null, smalltalk: null, vitser: null, santusant: null, utmerkelser: null };
 
 /* ---------- Hjelpere ---------- */
 function el(html) {
@@ -33,13 +33,14 @@ async function hentJSON(sti) {
 /* ---------- Oppstart ---------- */
 async function start() {
   try {
-    const [gjester, meny, program, smalltalk, vitser, santusant] = await Promise.all([
+    const [gjester, meny, program, smalltalk, vitser, santusant, utmerkelser] = await Promise.all([
       hentJSON("data/gjester.json"),
       hentJSON("data/meny.json").catch(() => null),
       hentJSON("data/program.json").catch(() => null),
       hentJSON("data/smalltalk.json").catch(() => null),
       hentJSON("data/vitser.json").catch(() => null),
       hentJSON("data/sant_usant.json").catch(() => null),
+      hentJSON("data/utmerkelser.json").catch(() => null),
     ]);
     DATA.gjester = gjester;
     DATA.meny = meny;
@@ -47,6 +48,7 @@ async function start() {
     DATA.smalltalk = smalltalk;
     DATA.vitser = vitser;
     DATA.santusant = santusant;
+    DATA.utmerkelser = utmerkelser;
     document.title = "Bryllup · " + (gjester.bryllup?.par || "");
     window.addEventListener("hashchange", ruter);
     ruter();
@@ -176,12 +178,21 @@ function visBordkart() {
   </div>`);
   app.append(sok);
 
+  app.append(el(`<p class="tapp-hint">Tips: trykk på et navn for en liten overraskelse 🎉</p>`));
+
   const treffboks = el(`<div id="treffboks"></div>`);
   app.append(treffboks);
 
   const bordvis = el(`<div id="bordvis"></div>`);
   app.append(bordvis);
   tegnAlleBord(bordvis);
+
+  // Trykk på et navn → morsom animasjon, gnister, utmerkelse og en truddelutt
+  bordvis.addEventListener("click", (e) => {
+    const plate = e.target.closest(".plass");
+    if (!plate || plate.classList.contains("tom") || !bordvis.contains(plate)) return;
+    moroPaaNavn(plate);
+  });
 
   const felt = sok.querySelector("#sokfelt");
   const reg = byggRegister();
@@ -342,6 +353,80 @@ function fremhev(p) {
 
   const bordSeksjon = document.getElementById("bord-" + p.bord.nummer);
   if (bordSeksjon) bordSeksjon.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+/* ---------- Moro ved trykk på navn ---------- */
+let lydKontekst = null;
+
+function spillTone(ctx, freq, start, dur, type = "triangle", vol = 0.2) {
+  const o = ctx.createOscillator();
+  const g = ctx.createGain();
+  o.type = type;
+  o.frequency.value = freq;
+  g.gain.setValueAtTime(0.0001, start);
+  g.gain.linearRampToValueAtTime(vol, start + 0.02);
+  g.gain.exponentialRampToValueAtTime(0.0001, start + dur);
+  o.connect(g); g.connect(ctx.destination);
+  o.start(start);
+  o.stop(start + dur + 0.03);
+}
+
+function spillTruddelutt() {
+  try {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return;
+    lydKontekst = lydKontekst || new AC();
+    if (lydKontekst.state === "suspended") lydKontekst.resume();
+    // Pentaton skala (C-dur) – låter alltid fint uansett rekkefølge
+    const skala = [523.25, 587.33, 659.25, 783.99, 880.0];
+    const antall = 3 + Math.floor(Math.random() * 2);
+    let t = lydKontekst.currentTime;
+    let forrige = -1;
+    for (let i = 0; i < antall; i++) {
+      let idx;
+      do { idx = Math.floor(Math.random() * skala.length); } while (idx === forrige);
+      forrige = idx;
+      spillTone(lydKontekst, skala[idx], t, 0.17);
+      t += 0.12;
+    }
+    // liten avsluttende "ding" en oktav opp
+    spillTone(lydKontekst, skala[skala.length - 1] * 2, t + 0.02, 0.3, "triangle", 0.16);
+  } catch (_) { /* stille om lyd ikke er tilgjengelig */ }
+}
+
+function lagGnister(plate) {
+  const emojis = ["✨", "🎉", "💫", "⭐", "🌟"];
+  for (let i = 0; i < 7; i++) {
+    const s = document.createElement("span");
+    s.className = "gnist";
+    s.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+    s.style.left = (25 + Math.random() * 50) + "%";
+    s.style.setProperty("--dx", (Math.random() * 70 - 35).toFixed(0) + "px");
+    s.style.animationDelay = (Math.random() * 0.14).toFixed(2) + "s";
+    plate.appendChild(s);
+    setTimeout(() => s.remove(), 1200);
+  }
+}
+
+function visUtmerkelse(plate) {
+  const liste = DATA.utmerkelser?.titler || [];
+  if (!liste.length) return;
+  const gammel = plate.querySelector(".utmerkelse");
+  if (gammel) gammel.remove();
+  const boble = document.createElement("div");
+  boble.className = "utmerkelse";
+  boble.textContent = liste[Math.floor(Math.random() * liste.length)];
+  plate.appendChild(boble);
+  setTimeout(() => boble.remove(), 2100);
+}
+
+function moroPaaNavn(plate) {
+  plate.classList.remove("sprett");
+  void plate.offsetWidth;
+  plate.classList.add("sprett");
+  lagGnister(plate);
+  visUtmerkelse(plate);
+  spillTruddelutt();
 }
 
 /* ---------- Meny ---------- */

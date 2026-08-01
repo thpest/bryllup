@@ -296,6 +296,7 @@ body {
 .langbord.enkel::before { display: none; }
 
 .plass {
+  position: relative;
   background: #fbfdff;
   border: 1px solid rgba(106,169,217,0.25);
   border-radius: var(--radius-liten);
@@ -305,9 +306,78 @@ body {
   color: var(--navy);
   min-height: 44px;
   display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
   transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
 }
-.plass.tom { background: transparent; border: none; }
+.plass.tom { background: transparent; border: none; cursor: default; }
+
+/* Trykk-animasjon */
+@keyframes sprett {
+  0% { transform: scale(1); }
+  30% { transform: scale(1.16) rotate(-3deg); }
+  55% { transform: scale(0.97) rotate(2deg); }
+  100% { transform: scale(1); }
+}
+.plass.sprett { animation: sprett .5s ease; z-index: 5; }
+
+/* Gnister som spretter opp */
+.gnist {
+  position: absolute;
+  left: 50%;
+  top: 2px;
+  font-size: 15px;
+  pointer-events: none;
+  z-index: 8;
+  animation: gnistFly .95s ease-out forwards;
+}
+@keyframes gnistFly {
+  0% { opacity: 0; transform: translate(-50%, 0) scale(.5); }
+  20% { opacity: 1; }
+  100% { opacity: 0; transform: translate(calc(-50% + var(--dx, 0)), -48px) scale(1.1); }
+}
+
+/* Utmerkelse-boble over navnet */
+.utmerkelse {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 9px);
+  transform: translateX(-50%);
+  background: var(--navy);
+  color: #fff;
+  font-size: 0.78rem;
+  line-height: 1.25;
+  text-align: center;
+  white-space: normal;
+  width: max-content;
+  max-width: 62vw;
+  padding: 7px 13px;
+  border-radius: 14px;
+  box-shadow: var(--skygge-loft);
+  z-index: 12;
+  pointer-events: none;
+  animation: bobleInn 2.1s ease forwards;
+}
+.utmerkelse::after {
+  content: "";
+  position: absolute;
+  left: 50%; top: 100%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: var(--navy);
+}
+@keyframes bobleInn {
+  0% { opacity: 0; transform: translateX(-50%) translateY(6px) scale(.8); }
+  10% { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+  82% { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateX(-50%) translateY(-5px) scale(.96); }
+}
+
+.tapp-hint {
+  text-align: center;
+  color: var(--navy-myk);
+  font-size: 0.85rem;
+  margin: 0 0 14px;
+}
 
 /* Fremhevet gjest (etter søk) */
 .plass.deg {
