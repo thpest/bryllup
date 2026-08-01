@@ -6,7 +6,7 @@
 
 const app = document.getElementById("app");
 
-const DATA = { gjester: null, meny: null, program: null, smalltalk: null, vitser: null, santusant: null, utmerkelser: null };
+const DATA = { gjester: null, meny: null, program: null, smalltalk: null, vitser: null, santusant: null, utmerkelser: null, hilsener: null };
 
 /* ---------- Hjelpere ---------- */
 function el(html) {
@@ -33,7 +33,7 @@ async function hentJSON(sti) {
 /* ---------- Oppstart ---------- */
 async function start() {
   try {
-    const [gjester, meny, program, smalltalk, vitser, santusant, utmerkelser] = await Promise.all([
+    const [gjester, meny, program, smalltalk, vitser, santusant, utmerkelser, hilsener] = await Promise.all([
       hentJSON("data/gjester.json"),
       hentJSON("data/meny.json").catch(() => null),
       hentJSON("data/program.json").catch(() => null),
@@ -41,6 +41,7 @@ async function start() {
       hentJSON("data/vitser.json").catch(() => null),
       hentJSON("data/sant_usant.json").catch(() => null),
       hentJSON("data/utmerkelser.json").catch(() => null),
+      hentJSON("data/hilsener.json").catch(() => null),
     ]);
     DATA.gjester = gjester;
     DATA.meny = meny;
@@ -49,6 +50,7 @@ async function start() {
     DATA.vitser = vitser;
     DATA.santusant = santusant;
     DATA.utmerkelser = utmerkelser;
+    DATA.hilsener = hilsener;
     document.title = "Bryllup · " + (gjester.bryllup?.par || "");
     window.addEventListener("hashchange", ruter);
     ruter();
@@ -315,6 +317,7 @@ function plassEl(navn, bord, rad, i) {
   p.dataset.bord = bord.nummer;
   p.dataset.rad = rad;
   p.dataset.i = i;
+  p.dataset.navn = navn;
   return p;
 }
 function tomEl() {
@@ -394,12 +397,13 @@ function spillTruddelutt() {
   } catch (_) { /* stille om lyd ikke er tilgjengelig */ }
 }
 
-function lagGnister(plate) {
+function lagGnister(plate, flagg) {
   const emojis = ["✨", "🎉", "💫", "⭐", "🌟"];
   for (let i = 0; i < 7; i++) {
     const s = document.createElement("span");
     s.className = "gnist";
-    s.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+    // strø inn flagget innimellom for spesialgjester
+    s.textContent = (flagg && i % 3 === 1) ? flagg : emojis[Math.floor(Math.random() * emojis.length)];
     s.style.left = (25 + Math.random() * 50) + "%";
     s.style.setProperty("--dx", (Math.random() * 70 - 35).toFixed(0) + "px");
     s.style.animationDelay = (Math.random() * 0.14).toFixed(2) + "s";
@@ -420,12 +424,28 @@ function visUtmerkelse(plate) {
   setTimeout(() => boble.remove(), 3100);
 }
 
+function visHilsen(plate, spesial) {
+  const liste = spesial.hilsener || [];
+  if (!liste.length) return;
+  const gammel = plate.querySelector(".utmerkelse");
+  if (gammel) gammel.remove();
+  const boble = document.createElement("div");
+  boble.className = "utmerkelse hilsen";
+  const tekst = liste[Math.floor(Math.random() * liste.length)];
+  boble.textContent = (spesial.flagg ? spesial.flagg + " " : "") + tekst;
+  plate.appendChild(boble);
+  setTimeout(() => boble.remove(), 3100);
+}
+
 function moroPaaNavn(plate) {
   plate.classList.remove("sprett");
   void plate.offsetWidth;
   plate.classList.add("sprett");
-  lagGnister(plate);
-  visUtmerkelse(plate);
+  const navn = plate.dataset.navn || plate.textContent;
+  const spesial = DATA.hilsener?.personer?.[navn];
+  lagGnister(plate, spesial && spesial.flagg);
+  if (spesial) visHilsen(plate, spesial);
+  else visUtmerkelse(plate);
   spillTruddelutt();
 }
 

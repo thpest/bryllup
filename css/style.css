@@ -365,6 +365,13 @@ body {
   border: 6px solid transparent;
   border-top-color: var(--navy);
 }
+/* Varm, gyllen variant for personlige hilsener (utenlandske gjester) */
+.utmerkelse.hilsen {
+  background: linear-gradient(135deg, #f4ecd6, #e7dcc4);
+  color: var(--navy);
+  font-weight: 600;
+}
+.utmerkelse.hilsen::after { border-top-color: #e7dcc4; }
 @keyframes bobleInn {
   0% { opacity: 0; transform: translateX(-50%) translateY(6px) scale(.8); }
   7% { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }

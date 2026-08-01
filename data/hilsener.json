@@ -1,0 +1,29 @@
+{
+  "_kommentar": "Personlige hilsener som vises når man trykker på gjestens navn. Nøkkelen må stemme nøyaktig med navnet i bordkartet.",
+  "personer": {
+    "Inger Johanne": {
+      "flagg": "🇩🇪",
+      "hilsener": [
+        "Herzlich willkommen, Inger Johanne!",
+        "Schön, dass du hier bist!",
+        "Wir freuen uns, dass du da bist!"
+      ]
+    },
+    "Elisabeth": {
+      "flagg": "🇩🇪",
+      "hilsener": [
+        "Herzlich willkommen, Elisabeth!",
+        "Schön, dass du hier bist!",
+        "Wir freuen uns, dass du da bist!"
+      ]
+    },
+    "Ari": {
+      "flagg": "🇪🇸",
+      "hilsener": [
+        "¡Hola, Ari! Qué alegría tenerte aquí.",
+        "¡Nos alegra muchísimo tenerte con nosotros!",
+        "¡Gracias por acompañarnos hoy!"
+      ]
+    }
+  }
+}
