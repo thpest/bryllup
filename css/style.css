@@ -803,6 +803,91 @@ body {
   letter-spacing: 0.04em;
 }
 
+/* ---------- Passord / adgangssperre ---------- */
+.adgang-laas {
+  position: fixed;
+  inset: 0;
+  z-index: 55;
+  background: linear-gradient(180deg, var(--himmel-topp), var(--himmel-bunn));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  animation: fadeInn .3s ease both;
+}
+.adgang-laas.aapner { opacity: 0; transition: opacity .35s ease; }
+.laas-kort {
+  background: #fff;
+  border-radius: var(--radius);
+  box-shadow: var(--skygge-loft);
+  padding: 36px 26px 30px;
+  max-width: 380px;
+  width: 100%;
+  text-align: center;
+}
+.laas-hjerte { font-size: 40px; line-height: 1; }
+.laas-par {
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: 2.1rem;
+  color: var(--navy);
+  margin: 8px 0 4px;
+}
+.laas-hilsen { color: var(--navy-myk); margin: 4px auto 18px; max-width: 22em; }
+.laas-form { display: flex; flex-direction: column; gap: 10px; }
+.laas-felt {
+  font-family: var(--sans);
+  font-size: 1.05rem;
+  color: var(--navy);
+  padding: 13px 16px;
+  border: 1px solid rgba(106,169,217,0.4);
+  border-radius: 12px;
+  background: #fbfdff;
+  outline: none;
+  text-align: center;
+}
+.laas-felt:focus { border-color: var(--blaa); }
+.laas-knapp {
+  appearance: none;
+  border: none;
+  cursor: pointer;
+  background: linear-gradient(135deg, #6aa9d9, #3f6f96);
+  color: #fff;
+  font-family: var(--sans);
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 13px 16px;
+  border-radius: 12px;
+  box-shadow: var(--skygge);
+}
+.laas-feil { color: #b23b3b; font-size: 0.9rem; margin: 12px 0 0; }
+@keyframes rist {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-7px); }
+  40%, 80% { transform: translateX(7px); }
+}
+.rist { animation: rist .4s ease; }
+
+/* Bjørn Olav-porten */
+.bo-laas {
+  background: linear-gradient(180deg, #ffffff, #f5faff);
+  border: 1px solid var(--gull-myk);
+  border-radius: var(--radius);
+  box-shadow: var(--skygge);
+  padding: 30px 24px 26px;
+  text-align: center;
+}
+.bo-laas .moro-emoji { font-size: 40px; line-height: 1; }
+.bo-hint {
+  font-family: var(--serif);
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--navy);
+  margin: 10px auto 16px;
+  max-width: 16em;
+}
+.bo-laas .laas-form { max-width: 280px; margin: 0 auto; }
+
 /* ---------- Feil / laster ---------- */
 .beskjed {
   background: var(--duk);

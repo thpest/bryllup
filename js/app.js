@@ -56,6 +56,10 @@ const I18N = {
     bingoInstr: "Trykk på rutene du ser skje. Full rad, kolonne eller diagonal = BINGO!",
     bingoStatus: "{n} av 9 krysset av", bingoRop: "BINGO! 🎉", bingoNullstill: "Nullstill brettet",
     komSnart: "Kommer snart …",
+    laasHilsen: "Skriv inn passordet for å åpne siden.",
+    laasPlaceholder: "Passord",
+    laasKnapp: "Åpne",
+    laasFeil: "Feil passord – prøv igjen.",
   },
   en: {
     tilbake: "Back",
@@ -98,6 +102,10 @@ const I18N = {
     bingoInstr: "Tap the squares you see happen. A full row, column or diagonal = BINGO!",
     bingoStatus: "{n} of 9 marked", bingoRop: "BINGO! 🎉", bingoNullstill: "Reset the board",
     komSnart: "Coming soon …",
+    laasHilsen: "Enter the password to open the page.",
+    laasPlaceholder: "Password",
+    laasKnapp: "Open",
+    laasFeil: "Wrong password – please try again.",
   },
   de: {
     tilbake: "Zurück",
@@ -140,6 +148,10 @@ const I18N = {
     bingoInstr: "Tippe auf die Felder, die du siehst. Eine volle Reihe, Spalte oder Diagonale = BINGO!",
     bingoStatus: "{n} von 9 markiert", bingoRop: "BINGO! 🎉", bingoNullstill: "Feld zurücksetzen",
     komSnart: "Kommt bald …",
+    laasHilsen: "Gib das Passwort ein, um die Seite zu öffnen.",
+    laasPlaceholder: "Passwort",
+    laasKnapp: "Öffnen",
+    laasFeil: "Falsches Passwort – bitte erneut versuchen.",
   },
   es: {
     tilbake: "Atrás",
@@ -182,6 +194,10 @@ const I18N = {
     bingoInstr: "Toca las casillas que veas ocurrir. Una fila, columna o diagonal completa = ¡BINGO!",
     bingoStatus: "{n} de 9 marcadas", bingoRop: "¡BINGO! 🎉", bingoNullstill: "Reiniciar el cartón",
     komSnart: "Próximamente …",
+    laasHilsen: "Introduce la contraseña para abrir la página.",
+    laasPlaceholder: "Contraseña",
+    laasKnapp: "Abrir",
+    laasFeil: "Contraseña incorrecta – inténtalo de nuevo.",
   },
 };
 
@@ -209,6 +225,7 @@ function setSprak(lang) {
   const bar = document.getElementById("sprakbar");
   if (bar) [...bar.children].forEach((b) => b.classList.toggle("aktiv", b.dataset.lang === lang));
   document.title = "Bryllup · " + (DATA.gjester?.bryllup?.par || "");
+  if (document.getElementById("adgang-laas")) { visAdgangsLaas(); return; }
   ruter();
 }
 
@@ -227,6 +244,59 @@ function byggSprakbar() {
     bar.append(b);
   }
   document.body.append(bar);
+}
+
+/* ---------- Passord (myk adgangssperre) ---------- */
+// SHA-256-hash av passordene – klartekst ligger IKKE i koden.
+const PASS_SIDE = "188d1e1c5b52a29f32b55c9a6287e4ec2bfdf9db3ac7c735827fece3fd553a78";
+const PASS_BO = "2067a7195567d457485b9cc0f75e0e944bdee4bdf3d3e9fef15dfe0bcd27bea1";
+
+async function hashSHA256(tekst) {
+  const data = new TextEncoder().encode(String(tekst).toLowerCase().trim());
+  const buf = await crypto.subtle.digest("SHA-256", data);
+  return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+async function passordStemmer(input, hash) {
+  try { return (await hashSHA256(input)) === hash; } catch (_) { return false; }
+}
+function sideLaastOpp() { try { return localStorage.getItem("adgang") === "1"; } catch (_) { return false; } }
+function boLaastOpp() { try { return localStorage.getItem("boAdgang") === "1"; } catch (_) { return false; } }
+
+function visAdgangsLaas() {
+  const par = DATA.gjester?.bryllup?.par || "";
+  const gammel = document.getElementById("adgang-laas");
+  if (gammel) gammel.remove();
+  const laas = el(`<div class="adgang-laas" id="adgang-laas">
+    <div class="laas-kort">
+      <div class="laas-hjerte">💍</div>
+      ${par ? `<h1 class="laas-par">${esc(par)}</h1>` : ""}
+      <p class="laas-hilsen">${esc(t("laasHilsen"))}</p>
+      <form class="laas-form" autocomplete="off">
+        <input type="password" class="laas-felt" placeholder="${esc(t("laasPlaceholder"))}"
+               autocapitalize="none" autocorrect="off" spellcheck="false" aria-label="${esc(t("laasPlaceholder"))}">
+        <button type="submit" class="laas-knapp">${esc(t("laasKnapp"))}</button>
+      </form>
+      <p class="laas-feil" hidden>${esc(t("laasFeil"))}</p>
+    </div>
+  </div>`);
+  document.body.append(laas);
+  const felt = laas.querySelector(".laas-felt");
+  const feil = laas.querySelector(".laas-feil");
+  const kort = laas.querySelector(".laas-kort");
+  laas.querySelector(".laas-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    if (await passordStemmer(felt.value, PASS_SIDE)) {
+      try { localStorage.setItem("adgang", "1"); } catch (_) {}
+      laas.classList.add("aapner");
+      setTimeout(() => laas.remove(), 350);
+      ruter();
+    } else {
+      feil.hidden = false;
+      kort.classList.remove("rist"); void kort.offsetWidth; kort.classList.add("rist");
+      felt.select();
+    }
+  });
+  setTimeout(() => felt.focus(), 200);
 }
 
 /* ---------- Hjelpere ---------- */
@@ -281,7 +351,8 @@ async function start() {
     byggSprakbar();
     document.title = "Bryllup · " + (gjester.bryllup?.par || "");
     window.addEventListener("hashchange", ruter);
-    ruter();
+    if (sideLaastOpp()) ruter();
+    else visAdgangsLaas();
   } catch (e) {
     app.innerHTML = "";
     app.append(el(`<div class="beskjed">
@@ -931,6 +1002,34 @@ const trekkKveldSmalltalk = lagTrekker(() => DATA.kveld?.smalltalk);
 const trekkBjornOlav = lagTrekker(() => DATA.bjornolav?.sporsmal);
 
 /* ---------- Spør Bjørn Olav (diskré dedikasjon) ---------- */
+function visBoLaas() {
+  const boks = el(`<div class="bo-laas">
+    <div class="moro-emoji">🤫</div>
+    <p class="bo-hint">Passord? Spør Bjørn Olav</p>
+    <form class="laas-form" autocomplete="off">
+      <input type="password" class="laas-felt" placeholder="Passord"
+             autocapitalize="none" autocorrect="off" spellcheck="false" aria-label="Passord">
+      <button type="submit" class="laas-knapp">Åpne</button>
+    </form>
+    <p class="laas-feil" hidden>Feil passord. Hint: spør Bjørn Olav! 😉</p>
+  </div>`);
+  app.append(boks);
+  const felt = boks.querySelector(".laas-felt");
+  const feil = boks.querySelector(".laas-feil");
+  boks.querySelector(".laas-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    if (await passordStemmer(felt.value, PASS_BO)) {
+      try { localStorage.setItem("boAdgang", "1"); } catch (_) {}
+      visBjornOlav();
+    } else {
+      feil.hidden = false;
+      boks.classList.remove("rist"); void boks.offsetWidth; boks.classList.add("rist");
+      felt.select();
+    }
+  });
+  setTimeout(() => felt.focus(), 150);
+}
+
 function visBjornOlav() {
   app.innerHTML = "";
   app.append(topplinje(DATA.bjornolav?.tittel || "Spør Bjørn Olav"));
@@ -939,6 +1038,7 @@ function visBjornOlav() {
     app.append(el(`<div class="beskjed">${esc(t("komSnart"))}</div>`));
     return;
   }
+  if (!boLaastOpp()) { visBoLaas(); return; }
   if (DATA.bjornolav.undertittel) {
     app.append(el(`<div class="seksjon-topp"><p class="under">${esc(DATA.bjornolav.undertittel)}</p></div>`));
   }
