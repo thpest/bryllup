@@ -248,7 +248,7 @@ function byggSprakbar() {
 
 /* ---------- Passord (myk adgangssperre) ---------- */
 // SHA-256-hash av passordene – klartekst ligger IKKE i koden.
-const PASS_SIDE = "188d1e1c5b52a29f32b55c9a6287e4ec2bfdf9db3ac7c735827fece3fd553a78";
+const PASS_SIDE = "f9add176f427a0e2e5a4b750a70a0c9ec2ab924cb8d2e51409f64ddcb879249c";
 const PASS_BO = "2067a7195567d457485b9cc0f75e0e944bdee4bdf3d3e9fef15dfe0bcd27bea1";
 
 async function hashSHA256(tekst) {
