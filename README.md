@@ -116,6 +116,14 @@ python -c "import hashlib; print(hashlib.sha256('NYTT_PASSORD'.lower().strip().e
 …og lim den nye hashen inn i riktig konstant. (Merk: dette er en «fløyelssnor»,
 ikke ekte sikkerhet – alt på en statisk side kan i prinsippet omgås.)
 
+### Navnevalg ved innlogging
+På låseskjermen velger gjesten navnet sitt fra en nedtrekksliste (alle gjestene,
+alfabetisk, med bordnavn så like fornavn skilles). Navnet lagres i localStorage og
+gjenbrukes: forhåndsutfylt i minneboken, automatisk søk i «Finn min plass», og en
+liten hilsen på forsiden. Valgte man feil, kan man rette det når som helst via
+«Ikke deg? Bytt navn» ved hilsenen (uten passord). «Jeg står ikke på lista» finnes
+for gjester som ikke er i lista.
+
 ---
 
 ## Minnebok (Google Sheet via Apps Script)

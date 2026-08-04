@@ -61,6 +61,10 @@ const I18N = {
     laasIkkeListe: "Jeg står ikke på lista",
     laasVelgNavn: "Velg navnet ditt i lista.",
     velkommenNavn: "Velkommen, {navn}!",
+    byttNavn: "Ikke deg? Bytt navn",
+    byttNavnHilsen: "Velg riktig navn:",
+    byttNavnLagre: "Lagre",
+    avbryt: "Avbryt",
     laasPlaceholder: "Passord",
     laasKnapp: "Åpne",
     laasFeil: "Feil passord – prøv igjen.",
@@ -121,6 +125,10 @@ const I18N = {
     laasIkkeListe: "I'm not on the list",
     laasVelgNavn: "Please select your name.",
     velkommenNavn: "Welcome, {navn}!",
+    byttNavn: "Not you? Change name",
+    byttNavnHilsen: "Choose the right name:",
+    byttNavnLagre: "Save",
+    avbryt: "Cancel",
     laasPlaceholder: "Password",
     laasKnapp: "Open",
     laasFeil: "Wrong password – please try again.",
@@ -181,6 +189,10 @@ const I18N = {
     laasIkkeListe: "Ich stehe nicht auf der Liste",
     laasVelgNavn: "Bitte wähle deinen Namen.",
     velkommenNavn: "Willkommen, {navn}!",
+    byttNavn: "Nicht du? Namen ändern",
+    byttNavnHilsen: "Wähle den richtigen Namen:",
+    byttNavnLagre: "Speichern",
+    avbryt: "Abbrechen",
     laasPlaceholder: "Passwort",
     laasKnapp: "Öffnen",
     laasFeil: "Falsches Passwort – bitte erneut versuchen.",
@@ -241,6 +253,10 @@ const I18N = {
     laasIkkeListe: "No estoy en la lista",
     laasVelgNavn: "Por favor, elige tu nombre.",
     velkommenNavn: "¡Hola, {navn}!",
+    byttNavn: "¿No eres tú? Cambiar nombre",
+    byttNavnHilsen: "Elige el nombre correcto:",
+    byttNavnLagre: "Guardar",
+    avbryt: "Cancelar",
     laasPlaceholder: "Contraseña",
     laasKnapp: "Abrir",
     laasFeil: "Contraseña incorrecta – inténtalo de nuevo.",
@@ -332,10 +348,8 @@ function alleGjestNavnOpts() {
       for (const navn of (b.rader?.[rad] || [])) flat.push({ navn, bordnavn: b.navn });
     }
   }
-  const antall = {};
-  flat.forEach((x) => { antall[x.navn] = (antall[x.navn] || 0) + 1; });
   return flat
-    .map((x) => ({ value: x.navn, label: antall[x.navn] > 1 ? `${x.navn} (${x.bordnavn})` : x.navn }))
+    .map((x) => ({ value: x.navn, label: `${x.navn} · ${x.bordnavn}` }))
     .sort((a, b) => a.value.toLowerCase().localeCompare(b.value.toLowerCase(), "nb"));
 }
 
@@ -397,6 +411,41 @@ function visAdgangsLaas() {
     }
   });
   setTimeout(() => navnSel.focus(), 200);
+}
+
+// Bytt navn i etterkant (uten passord) – hvis noen valgte feil ved innlogging
+function visNavnVelger() {
+  const gammel = document.getElementById("navn-velger");
+  if (gammel) gammel.remove();
+  const opts = alleGjestNavnOpts();
+  const optionsHtml =
+    `<option value="">${esc(t("laasNavnPlaceholder"))}</option>` +
+    opts.map((o) => `<option value="${esc(o.value)}">${esc(o.label)}</option>`).join("") +
+    `<option value="__skip__">${esc(t("laasIkkeListe"))}</option>`;
+  const overlay = el(`<div class="adgang-laas" id="navn-velger">
+    <div class="laas-kort">
+      <div class="laas-hjerte">🙋</div>
+      <p class="laas-hilsen">${esc(t("byttNavnHilsen"))}</p>
+      <form class="laas-form" autocomplete="off">
+        <select class="laas-navn" aria-label="${esc(t("laasNavnPlaceholder"))}">${optionsHtml}</select>
+        <button type="submit" class="laas-knapp">${esc(t("byttNavnLagre"))}</button>
+      </form>
+      <button type="button" class="laas-avbryt">${esc(t("avbryt"))}</button>
+    </div>
+  </div>`);
+  document.body.append(overlay);
+  const sel = overlay.querySelector(".laas-navn");
+  const lagret = gjestNavn();
+  if (lagret && [...sel.options].some((o) => o.value === lagret)) sel.value = lagret;
+  overlay.querySelector(".laas-form").addEventListener("submit", (e) => {
+    e.preventDefault();
+    if (!sel.value) { sel.focus(); return; }
+    settGjestNavn(sel.value === "__skip__" ? "" : sel.value);
+    overlay.remove();
+    ruter();
+  });
+  overlay.querySelector(".laas-avbryt").addEventListener("click", () => overlay.remove());
+  setTimeout(() => sel.focus(), 150);
 }
 
 /* ---------- Hjelpere ---------- */
@@ -508,7 +557,9 @@ function visForside() {
 
   const meg = gjestNavn();
   if (meg) {
-    app.append(el(`<p class="gjest-hilsen">${t("velkommenNavn", { navn: esc(meg) })} 👋</p>`));
+    const hilsenP = el(`<p class="gjest-hilsen">${t("velkommenNavn", { navn: esc(meg) })} 👋 <a class="bytt-navn-lenke" href="#">${esc(t("byttNavn"))}</a></p>`);
+    hilsenP.querySelector(".bytt-navn-lenke").addEventListener("click", (e) => { e.preventDefault(); visNavnVelger(); });
+    app.append(hilsenP);
   }
 
   const knapper = el(`<nav class="meny-knapper"></nav>`);

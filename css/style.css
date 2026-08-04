@@ -167,6 +167,18 @@ body {
   font-size: 1.25rem;
   font-weight: 600;
 }
+.bytt-navn-lenke {
+  display: inline-block;
+  font-family: var(--sans);
+  font-size: 0.78rem;
+  font-weight: 400;
+  color: var(--navy-myk);
+  opacity: 0.75;
+  text-decoration: underline;
+  margin-left: 4px;
+  white-space: nowrap;
+}
+.bytt-navn-lenke:hover { opacity: 1; }
 
 .meny-knapper {
   display: grid;
@@ -935,6 +947,17 @@ body {
   box-shadow: var(--skygge);
 }
 .laas-feil { color: #b23b3b; font-size: 0.9rem; margin: 12px 0 0; }
+.laas-avbryt {
+  appearance: none;
+  border: none;
+  background: transparent;
+  color: var(--navy-myk);
+  font-family: var(--sans);
+  font-size: 0.9rem;
+  margin-top: 14px;
+  cursor: pointer;
+  text-decoration: underline;
+}
 @keyframes rist {
   0%, 100% { transform: translateX(0); }
   20%, 60% { transform: translateX(-7px); }
