@@ -56,7 +56,11 @@ const I18N = {
     bingoInstr: "Trykk på rutene du ser skje. Full rad, kolonne eller diagonal = BINGO!",
     bingoStatus: "{n} av 9 krysset av", bingoRop: "BINGO! 🎉", bingoNullstill: "Nullstill brettet",
     komSnart: "Kommer snart …",
-    laasHilsen: "Skriv inn passordet for å åpne siden.",
+    laasHilsen: "Finn navnet ditt og skriv inn passordet.",
+    laasNavnPlaceholder: "Velg navnet ditt …",
+    laasIkkeListe: "Jeg står ikke på lista",
+    laasVelgNavn: "Velg navnet ditt i lista.",
+    velkommenNavn: "Velkommen, {navn}!",
     laasPlaceholder: "Passord",
     laasKnapp: "Åpne",
     laasFeil: "Feil passord – prøv igjen.",
@@ -112,7 +116,11 @@ const I18N = {
     bingoInstr: "Tap the squares you see happen. A full row, column or diagonal = BINGO!",
     bingoStatus: "{n} of 9 marked", bingoRop: "BINGO! 🎉", bingoNullstill: "Reset the board",
     komSnart: "Coming soon …",
-    laasHilsen: "Enter the password to open the page.",
+    laasHilsen: "Find your name and enter the password.",
+    laasNavnPlaceholder: "Select your name …",
+    laasIkkeListe: "I'm not on the list",
+    laasVelgNavn: "Please select your name.",
+    velkommenNavn: "Welcome, {navn}!",
     laasPlaceholder: "Password",
     laasKnapp: "Open",
     laasFeil: "Wrong password – please try again.",
@@ -168,7 +176,11 @@ const I18N = {
     bingoInstr: "Tippe auf die Felder, die du siehst. Eine volle Reihe, Spalte oder Diagonale = BINGO!",
     bingoStatus: "{n} von 9 markiert", bingoRop: "BINGO! 🎉", bingoNullstill: "Feld zurücksetzen",
     komSnart: "Kommt bald …",
-    laasHilsen: "Gib das Passwort ein, um die Seite zu öffnen.",
+    laasHilsen: "Finde deinen Namen und gib das Passwort ein.",
+    laasNavnPlaceholder: "Wähle deinen Namen …",
+    laasIkkeListe: "Ich stehe nicht auf der Liste",
+    laasVelgNavn: "Bitte wähle deinen Namen.",
+    velkommenNavn: "Willkommen, {navn}!",
     laasPlaceholder: "Passwort",
     laasKnapp: "Öffnen",
     laasFeil: "Falsches Passwort – bitte erneut versuchen.",
@@ -224,7 +236,11 @@ const I18N = {
     bingoInstr: "Toca las casillas que veas ocurrir. Una fila, columna o diagonal completa = ¡BINGO!",
     bingoStatus: "{n} de 9 marcadas", bingoRop: "¡BINGO! 🎉", bingoNullstill: "Reiniciar el cartón",
     komSnart: "Próximamente …",
-    laasHilsen: "Introduce la contraseña para abrir la página.",
+    laasHilsen: "Encuentra tu nombre e introduce la contraseña.",
+    laasNavnPlaceholder: "Elige tu nombre …",
+    laasIkkeListe: "No estoy en la lista",
+    laasVelgNavn: "Por favor, elige tu nombre.",
+    velkommenNavn: "¡Hola, {navn}!",
     laasPlaceholder: "Contraseña",
     laasKnapp: "Abrir",
     laasFeil: "Contraseña incorrecta – inténtalo de nuevo.",
@@ -302,41 +318,85 @@ async function passordStemmer(input, hash) {
 function sideLaastOpp() { try { return localStorage.getItem("adgang") === "1"; } catch (_) { return false; } }
 function boLaastOpp() { try { return localStorage.getItem("boAdgang") === "1"; } catch (_) { return false; } }
 
+// Gjestens eget navn (valgt på låseskjermen), lagret i localStorage
+function gjestNavn() { try { return localStorage.getItem("gjestNavn") || ""; } catch (_) { return ""; } }
+function settGjestNavn(navn) {
+  try { if (navn) localStorage.setItem("gjestNavn", navn); else localStorage.removeItem("gjestNavn"); } catch (_) {}
+}
+
+// Alle gjestenavn, alfabetisk. Bordnavn legges på når to har samme fornavn.
+function alleGjestNavnOpts() {
+  const flat = [];
+  for (const b of (DATA.gjester?.bord || [])) {
+    for (const rad of ["A", "B"]) {
+      for (const navn of (b.rader?.[rad] || [])) flat.push({ navn, bordnavn: b.navn });
+    }
+  }
+  const antall = {};
+  flat.forEach((x) => { antall[x.navn] = (antall[x.navn] || 0) + 1; });
+  return flat
+    .map((x) => ({ value: x.navn, label: antall[x.navn] > 1 ? `${x.navn} (${x.bordnavn})` : x.navn }))
+    .sort((a, b) => a.value.toLowerCase().localeCompare(b.value.toLowerCase(), "nb"));
+}
+
 function visAdgangsLaas() {
   const par = DATA.gjester?.bryllup?.par || "";
   const gammel = document.getElementById("adgang-laas");
   if (gammel) gammel.remove();
+
+  const opts = alleGjestNavnOpts();
+  const optionsHtml =
+    `<option value="">${esc(t("laasNavnPlaceholder"))}</option>` +
+    opts.map((o) => `<option value="${esc(o.value)}">${esc(o.label)}</option>`).join("") +
+    `<option value="__skip__">${esc(t("laasIkkeListe"))}</option>`;
+
   const laas = el(`<div class="adgang-laas" id="adgang-laas">
     <div class="laas-kort">
       <div class="laas-hjerte">💍</div>
       ${par ? `<h1 class="laas-par">${esc(par)}</h1>` : ""}
       <p class="laas-hilsen">${esc(t("laasHilsen"))}</p>
       <form class="laas-form" autocomplete="off">
+        <select class="laas-navn" aria-label="${esc(t("laasNavnPlaceholder"))}">${optionsHtml}</select>
         <input type="password" class="laas-felt" placeholder="${esc(t("laasPlaceholder"))}"
                autocapitalize="none" autocorrect="off" spellcheck="false" aria-label="${esc(t("laasPlaceholder"))}">
         <button type="submit" class="laas-knapp">${esc(t("laasKnapp"))}</button>
       </form>
-      <p class="laas-feil" hidden>${esc(t("laasFeil"))}</p>
+      <p class="laas-feil" hidden></p>
     </div>
   </div>`);
   document.body.append(laas);
+
+  const navnSel = laas.querySelector(".laas-navn");
   const felt = laas.querySelector(".laas-felt");
   const feil = laas.querySelector(".laas-feil");
   const kort = laas.querySelector(".laas-kort");
+
+  // forhåndsvelg hvis navn allerede er lagret
+  const lagret = gjestNavn();
+  if (lagret && [...navnSel.options].some((o) => o.value === lagret)) navnSel.value = lagret;
+
   laas.querySelector(".laas-form").addEventListener("submit", async (e) => {
     e.preventDefault();
+    if (!navnSel.value) {
+      feil.textContent = t("laasVelgNavn");
+      feil.hidden = false;
+      navnSel.focus();
+      return;
+    }
     if (await passordStemmer(felt.value, PASS_SIDE)) {
       try { localStorage.setItem("adgang", "1"); } catch (_) {}
+      settGjestNavn(navnSel.value === "__skip__" ? "" : navnSel.value);
       laas.classList.add("aapner");
       setTimeout(() => laas.remove(), 350);
       ruter();
     } else {
+      feil.textContent = t("laasFeil");
       feil.hidden = false;
       kort.classList.remove("rist"); void kort.offsetWidth; kort.classList.add("rist");
       felt.select();
     }
   });
-  setTimeout(() => felt.focus(), 200);
+  setTimeout(() => navnSel.focus(), 200);
 }
 
 /* ---------- Hjelpere ---------- */
@@ -445,6 +505,11 @@ function visForside() {
       <p class="hilsen">${esc(tr(b.hilsen) || "")}</p>
     </header>
   `));
+
+  const meg = gjestNavn();
+  if (meg) {
+    app.append(el(`<p class="gjest-hilsen">${t("velkommenNavn", { navn: esc(meg) })} 👋</p>`));
+  }
 
   const knapper = el(`<nav class="meny-knapper"></nav>`);
   const punkter = [
@@ -647,7 +712,15 @@ function visBordkart() {
 
   felt.addEventListener("input", () => { valgtNavn = null; oppdater(); });
   felt.addEventListener("search", oppdater);
-  setTimeout(() => felt.focus(), 250);
+
+  // Fyll ut automatisk hvis gjesten valgte navnet sitt ved innlogging
+  const meg = gjestNavn();
+  if (meg && reg.some((p) => norm(p.navn) === norm(meg))) {
+    felt.value = meg;
+    oppdater();
+  } else {
+    setTimeout(() => felt.focus(), 250);
+  }
 }
 
 function tegnAlleBord(container) {
@@ -1335,6 +1408,8 @@ function visMinnebok() {
   const tekstEl = kort.querySelector(".mb-tekst");
   const feilEl = kort.querySelector(".mb-feil");
   const sendKnapp = kort.querySelector(".mb-send");
+
+  navnEl.value = gjestNavn(); // ferdig utfylt hvis gjesten valgte navn ved innlogging
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();

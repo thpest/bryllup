@@ -159,6 +159,15 @@ body {
   font-size: 14px;
 }
 
+.gjest-hilsen {
+  text-align: center;
+  margin: -8px 0 18px;
+  color: var(--blaa-dyp);
+  font-family: var(--serif);
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
 .meny-knapper {
   display: grid;
   gap: 14px;
@@ -887,6 +896,19 @@ body {
 }
 .laas-hilsen { color: var(--navy-myk); margin: 4px auto 18px; max-width: 22em; }
 .laas-form { display: flex; flex-direction: column; gap: 10px; }
+.laas-navn {
+  font-family: var(--sans);
+  font-size: 1rem;
+  color: var(--navy);
+  padding: 12px 14px;
+  border: 1px solid rgba(106,169,217,0.4);
+  border-radius: 12px;
+  background: #fbfdff;
+  outline: none;
+  width: 100%;
+  cursor: pointer;
+}
+.laas-navn:focus { border-color: var(--blaa); }
 .laas-felt {
   font-family: var(--sans);
   font-size: 1.05rem;
