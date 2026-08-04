@@ -60,6 +60,16 @@ const I18N = {
     laasPlaceholder: "Passord",
     laasKnapp: "Åpne",
     laasFeil: "Feil passord – prøv igjen.",
+    btnMinnebokT: "Minnebok", btnMinnebokU: "Skriv en hilsen til brudeparet",
+    minnebokIntro: "Skriv en liten hilsen eller et minne fra festen. Alt samles til en minnebok til brudeparet.",
+    minnebokNavn: "Navnet ditt (valgfritt)",
+    minnebokTekst: "Din hilsen eller minne …",
+    minnebokSend: "Send", minnebokSender: "Sender …",
+    minnebokTakk: "Takk for hilsenen! 💛",
+    minnebokTakkUnder: "Vil du skrive en til?",
+    minnebokIgjen: "Skriv en ny",
+    minnebokFeil: "Klarte ikke å sende – sjekk nettet og prøv igjen.",
+    minnebokTomFeil: "Skriv en liten hilsen først.",
   },
   en: {
     tilbake: "Back",
@@ -106,6 +116,16 @@ const I18N = {
     laasPlaceholder: "Password",
     laasKnapp: "Open",
     laasFeil: "Wrong password – please try again.",
+    btnMinnebokT: "Guest book", btnMinnebokU: "Leave a message for the couple",
+    minnebokIntro: "Write a short greeting or a memory from the party. It all becomes a keepsake book for the couple.",
+    minnebokNavn: "Your name (optional)",
+    minnebokTekst: "Your message or memory …",
+    minnebokSend: "Send", minnebokSender: "Sending …",
+    minnebokTakk: "Thank you for your message! 💛",
+    minnebokTakkUnder: "Want to write another?",
+    minnebokIgjen: "Write another",
+    minnebokFeil: "Couldn't send – check your connection and try again.",
+    minnebokTomFeil: "Please write a message first.",
   },
   de: {
     tilbake: "Zurück",
@@ -152,6 +172,16 @@ const I18N = {
     laasPlaceholder: "Passwort",
     laasKnapp: "Öffnen",
     laasFeil: "Falsches Passwort – bitte erneut versuchen.",
+    btnMinnebokT: "Gästebuch", btnMinnebokU: "Hinterlasse dem Brautpaar eine Nachricht",
+    minnebokIntro: "Schreib einen kleinen Gruß oder eine Erinnerung von der Feier. Alles wird zu einem Erinnerungsbuch für das Brautpaar.",
+    minnebokNavn: "Dein Name (optional)",
+    minnebokTekst: "Deine Nachricht oder Erinnerung …",
+    minnebokSend: "Senden", minnebokSender: "Senden …",
+    minnebokTakk: "Danke für deine Nachricht! 💛",
+    minnebokTakkUnder: "Möchtest du noch eine schreiben?",
+    minnebokIgjen: "Noch eine schreiben",
+    minnebokFeil: "Konnte nicht gesendet werden – prüfe deine Verbindung und versuche es erneut.",
+    minnebokTomFeil: "Bitte schreibe zuerst eine Nachricht.",
   },
   es: {
     tilbake: "Atrás",
@@ -198,6 +228,16 @@ const I18N = {
     laasPlaceholder: "Contraseña",
     laasKnapp: "Abrir",
     laasFeil: "Contraseña incorrecta – inténtalo de nuevo.",
+    btnMinnebokT: "Libro de recuerdos", btnMinnebokU: "Deja un mensaje a los novios",
+    minnebokIntro: "Escribe un pequeño saludo o un recuerdo de la fiesta. Todo se reunirá en un libro de recuerdos para los novios.",
+    minnebokNavn: "Tu nombre (opcional)",
+    minnebokTekst: "Tu mensaje o recuerdo …",
+    minnebokSend: "Enviar", minnebokSender: "Enviando …",
+    minnebokTakk: "¡Gracias por tu mensaje! 💛",
+    minnebokTakkUnder: "¿Quieres escribir otro?",
+    minnebokIgjen: "Escribir otro",
+    minnebokFeil: "No se pudo enviar – comprueba tu conexión e inténtalo de nuevo.",
+    minnebokTomFeil: "Escribe un mensaje primero.",
   },
 };
 
@@ -377,6 +417,7 @@ function ruter() {
   else if (h === "santusant") visSantUsant();
   else if (h === "kveld") visKveld();
   else if (h === "bjornolav") visBjornOlav();
+  else if (h === "minnebok") visMinnebok();
   else visForside();
   app.classList.add("fade-inn");
   window.scrollTo(0, 0);
@@ -422,6 +463,9 @@ function visForside() {
   }
   if (DATA.vitser?.vitser?.length) {
     punkter.push({ hash: "vitser", ikon: "😂", tittel: t("btnVitserT"), under: t("btnVitserU") });
+  }
+  if (b.minnebokUrl) {
+    punkter.push({ hash: "minnebok", ikon: "📖", tittel: t("btnMinnebokT"), under: t("btnMinnebokU") });
   }
   for (const p of punkter) {
     const a = el(`<a class="stor-knapp" href="#/${p.hash}">
@@ -1238,6 +1282,94 @@ function tegnBingo(container) {
   });
   tegnCeller();
   oppdaterStatus();
+}
+
+/* ---------- Minnebok (skriver til Google Sheet) ---------- */
+async function sendMinnebok(url, navn, tekst) {
+  const body = new URLSearchParams({
+    action: "minnebok",
+    navn: navn || "",
+    tekst: tekst,
+    submittedAt: new Date().toISOString(),
+  });
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 9000);
+  try {
+    // Google Apps Script svarer uten CORS-hoder → no-cors (svaret blir ugjennomsiktig)
+    await fetch(url, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
+      body,
+      signal: ctrl.signal,
+    });
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+function visMinnebok() {
+  app.innerHTML = "";
+  app.append(topplinje(t("btnMinnebokT")));
+  const url = DATA.gjester?.bryllup?.minnebokUrl;
+  if (!url) {
+    app.append(el(`<div class="beskjed">${esc(t("komSnart"))}</div>`));
+    return;
+  }
+  app.append(el(`<div class="seksjon-topp"><p class="under">${esc(t("minnebokIntro"))}</p></div>`));
+
+  const kort = el(`<div class="minnebok-kort">
+    <form class="minnebok-form" autocomplete="off">
+      <input type="text" class="mb-navn" maxlength="60"
+             placeholder="${esc(t("minnebokNavn"))}" aria-label="${esc(t("minnebokNavn"))}">
+      <textarea class="mb-tekst" rows="5" maxlength="600"
+                placeholder="${esc(t("minnebokTekst"))}" aria-label="${esc(t("minnebokTekst"))}"></textarea>
+      <p class="mb-feil" hidden></p>
+      <button type="submit" class="mb-send">${esc(t("minnebokSend"))}</button>
+    </form>
+  </div>`);
+  app.append(kort);
+
+  const form = kort.querySelector(".minnebok-form");
+  const navnEl = kort.querySelector(".mb-navn");
+  const tekstEl = kort.querySelector(".mb-tekst");
+  const feilEl = kort.querySelector(".mb-feil");
+  const sendKnapp = kort.querySelector(".mb-send");
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const tekst = tekstEl.value.trim();
+    feilEl.hidden = true;
+    if (!tekst) {
+      feilEl.textContent = t("minnebokTomFeil");
+      feilEl.hidden = false;
+      tekstEl.focus();
+      return;
+    }
+    sendKnapp.disabled = true;
+    sendKnapp.textContent = t("minnebokSender");
+    try {
+      await sendMinnebok(url, navnEl.value.trim(), tekst);
+      visMinnebokTakk(kort);
+    } catch (_) {
+      feilEl.textContent = t("minnebokFeil");
+      feilEl.hidden = false;
+      sendKnapp.disabled = false;
+      sendKnapp.textContent = t("minnebokSend");
+    }
+  });
+  setTimeout(() => tekstEl.focus(), 200);
+}
+
+function visMinnebokTakk(kort) {
+  kort.innerHTML = `<div class="mb-takk">
+    <div class="mb-takk-ikon">💛</div>
+    <p class="mb-takk-tittel">${esc(t("minnebokTakk"))}</p>
+    <p class="mb-takk-under">${esc(t("minnebokTakkUnder"))}</p>
+    <button class="neste-knapp lys" id="mb-igjen">${esc(t("minnebokIgjen"))}</button>
+  </div>`;
+  kort.querySelector("#mb-igjen").addEventListener("click", () => visMinnebok());
+  kort.classList.add("fade-inn");
 }
 
 start();

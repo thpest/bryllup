@@ -803,6 +803,58 @@ body {
   letter-spacing: 0.04em;
 }
 
+/* ---------- Minnebok ---------- */
+.minnebok-kort {
+  background: var(--duk);
+  border-radius: var(--radius);
+  box-shadow: var(--skygge);
+  padding: 22px 20px 24px;
+}
+.minnebok-form { display: flex; flex-direction: column; gap: 12px; }
+.mb-navn, .mb-tekst {
+  font-family: var(--sans);
+  font-size: 1rem;
+  color: var(--navy);
+  padding: 12px 14px;
+  border: 1px solid rgba(106,169,217,0.4);
+  border-radius: 12px;
+  background: #fbfdff;
+  outline: none;
+  width: 100%;
+}
+.mb-navn:focus, .mb-tekst:focus { border-color: var(--blaa); }
+.mb-tekst { resize: vertical; min-height: 120px; line-height: 1.5; }
+.mb-feil { color: #b23b3b; font-size: 0.9rem; margin: 0; }
+.mb-send {
+  appearance: none;
+  border: none;
+  cursor: pointer;
+  background: linear-gradient(135deg, #6aa9d9, #3f6f96);
+  color: #fff;
+  font-family: var(--sans);
+  font-size: 1.05rem;
+  font-weight: 600;
+  padding: 13px 16px;
+  border-radius: 12px;
+  box-shadow: var(--skygge);
+  transition: transform .15s ease, box-shadow .15s ease, opacity .15s ease;
+}
+.mb-send:disabled { opacity: 0.6; cursor: default; }
+.mb-send:active:not(:disabled) { transform: translateY(1px); }
+@media (hover: hover) {
+  .mb-send:hover:not(:disabled) { transform: translateY(-2px); box-shadow: var(--skygge-loft); }
+}
+.mb-takk { text-align: center; padding: 20px 8px 8px; }
+.mb-takk-ikon { font-size: 44px; line-height: 1; }
+.mb-takk-tittel {
+  font-family: var(--serif);
+  font-size: 1.7rem;
+  font-weight: 600;
+  color: var(--navy);
+  margin: 10px 0 4px;
+}
+.mb-takk-under { color: var(--navy-myk); margin: 0 0 16px; }
+
 /* ---------- Passord / adgangssperre ---------- */
 .adgang-laas {
   position: fixed;
