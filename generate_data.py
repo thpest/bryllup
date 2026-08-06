@@ -38,7 +38,7 @@ BRYLLUP = {
         "es": "¡Bienvenidos a la celebración!",
     },
     "bilderUrl": "https://photos.google.com/share/AF1QipNV5mkBwotKZ8-XSeC5paGjq8tsmBY_xBfPu8C394YWo4hVYZl1eEQVs6TMHbvkGw?key=TU9zR3RZZHAtRGN1ck1uakFldk9WNU92OEJaTGpn",
-    "portalAapner": "2026-08-15T12:00:00+02:00",
+    "portalAapner": "2026-08-15T10:00:00+02:00",
     "kveldLaasOpp": "2026-08-15T20:00:00+02:00",
     "minnebokUrl": "https://script.google.com/macros/s/AKfycbzoJTqLcxNA7YucLne8a65AccHQxa0aRXZIKlAqqlljodD9s4ZgyvIAUnB7WwhTIbFE/exec",
 }

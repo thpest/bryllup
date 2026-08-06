@@ -16,7 +16,7 @@ Statisk nettside (ingen egen server), bygget for **GitHub Pages**:
 - **Bilder** – lenke til delt Google Foto-album
 - **Smalltalk / Sant eller usant / Vitser** – små leker (norsk)
 - **Kveldsmodus** – låses opp automatisk kl. 20:00 (oppdrag, frekk smalltalk, dansegulv-bingo)
-- **Ventehall** – innloggingen er åpen på forhånd, portalen åpner 15. august kl. 12:00
+- **Ventehall** – innloggingen er åpen på forhånd, portalen åpner 15. august kl. 10:00
 - **Toastmaster** – vendekort med to bilder av Petter-Martin (det pene → det ekte 🤣)
 - **Minnebok** – gjestene skriver «snaps» som lagres i Google Sheet (se eget avsnitt)
 - **Språkvalg** 🇳🇴 🇬🇧 🇩🇪 🇪🇸 (flagg øverst; huskes på telefonen)
@@ -122,7 +122,7 @@ ikke ekte sikkerhet – alt på en statisk side kan i prinsippet omgås.)
 
 ### Portalen åpner på bryllupsdagen
 Gjestene kan logge inn i god tid (lenken sendes ut 14. august), men selve
-innholdet er sperret til **15. august kl. 12.00**. Fram til da møtes de av en
+innholdet er sperret til **15. august kl. 10.00**. Fram til da møtes de av en
 ventehall med nedtelling («Du er påmeldt!»), og når klokka passerer, dukker det
 opp en knapp rett inn i portalen. Tidspunktet styres av `bryllup.portalAapner` i
 `data/gjester.json`. Forhåndsvis den åpne portalen med `?apen=1` i adressen

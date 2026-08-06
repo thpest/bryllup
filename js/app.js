@@ -62,7 +62,7 @@ const I18N = {
     laasVelgNavn: "Velg navnet ditt i lista.",
     velkommenNavn: "Velkommen, {navn}!",
     ventTittel: "Du er påmeldt! 🎉",
-    ventUnder: "Portalen åpner på bryllupsdagen, 15. august kl. 12.00. Da finner du bordet ditt, menyen, programmet og mye mer her.",
+    ventUnder: "Portalen åpner på bryllupsdagen, {tid}. Da finner du bordet ditt, menyen, programmet og mye mer her.",
     ventNedtelling: "Åpner om {d}d {t}t {m}m {s}s",
     ventKlar: "Portalen er åpen – trykk for å gå inn!",
     byttNavn: "Ikke deg? Bytt navn",
@@ -131,7 +131,7 @@ const I18N = {
     laasVelgNavn: "Please select your name.",
     velkommenNavn: "Welcome, {navn}!",
     ventTittel: "You're all set! 🎉",
-    ventUnder: "The portal opens on the wedding day, 15 August at 12:00. That's when you'll find your table, the menu, the programme and much more here.",
+    ventUnder: "The portal opens on the wedding day, {tid}. That's when you'll find your table, the menu, the programme and much more here.",
     ventNedtelling: "Opens in {d}d {t}h {m}m {s}s",
     ventKlar: "The portal is open – tap to enter!",
     byttNavn: "Not you? Change name",
@@ -200,7 +200,7 @@ const I18N = {
     laasVelgNavn: "Bitte wähle deinen Namen.",
     velkommenNavn: "Willkommen, {navn}!",
     ventTittel: "Du bist angemeldet! 🎉",
-    ventUnder: "Das Portal öffnet am Hochzeitstag, dem 15. August um 12:00 Uhr. Dann findest du hier deinen Tisch, das Menü, das Programm und vieles mehr.",
+    ventUnder: "Das Portal öffnet am Hochzeitstag, {tid}. Dann findest du hier deinen Tisch, das Menü, das Programm und vieles mehr.",
     ventNedtelling: "Öffnet in {d}T {t}h {m}m {s}s",
     ventKlar: "Das Portal ist offen – tippe, um einzutreten!",
     byttNavn: "Nicht du? Namen ändern",
@@ -269,7 +269,7 @@ const I18N = {
     laasVelgNavn: "Por favor, elige tu nombre.",
     velkommenNavn: "¡Hola, {navn}!",
     ventTittel: "¡Ya estás dentro! 🎉",
-    ventUnder: "El portal se abre el día de la boda, el 15 de agosto a las 12:00. Entonces encontrarás aquí tu mesa, el menú, el programa y mucho más.",
+    ventUnder: "El portal se abre el día de la boda, {tid}. Entonces encontrarás aquí tu mesa, el menú, el programa y mucho más.",
     ventNedtelling: "Abre en {d}d {t}h {m}m {s}s",
     ventKlar: "¡El portal está abierto – toca para entrar!",
     byttNavn: "¿No eres tú? Cambiar nombre",
@@ -478,6 +478,21 @@ function portalMaaltid() {
   const ms = tid ? new Date(tid).getTime() : NaN;
   return isNaN(ms) ? null : ms;
 }
+// «15. august kl. 10:00» – alltid norsk tid, formatert på gjestens språk
+function portalTidTekst() {
+  const maal = portalMaaltid();
+  if (maal === null) return "";
+  const locale = { no: "nb-NO", en: "en-GB", de: "de-DE", es: "es-ES" }[SPRAK] || "nb-NO";
+  try {
+    return new Intl.DateTimeFormat(locale, {
+      day: "numeric", month: "long", hour: "2-digit", minute: "2-digit",
+      timeZone: "Europe/Oslo",
+    }).format(new Date(maal));
+  } catch (_) {
+    return "";
+  }
+}
+
 function erPortalAapen() {
   if (erPortalForhaandsvis()) return true;
   const maal = portalMaaltid();
@@ -500,7 +515,7 @@ function visVentehall() {
   const kort = el(`<div class="ventehall">
     <p class="vent-tittel">${esc(t("ventTittel"))}</p>
     ${meg ? `<p class="vent-navn">${t("velkommenNavn", { navn: esc(meg) })}</p>` : ""}
-    <p class="vent-under">${esc(t("ventUnder"))}</p>
+    <p class="vent-under">${esc(t("ventUnder", { tid: portalTidTekst() }))}</p>
     <p class="nedtelling" id="vent-nedtelling"></p>
     ${meg ? `<a class="bytt-navn-lenke" href="#" id="vent-bytt">${esc(t("byttNavn"))}</a>` : ""}
   </div>`);
