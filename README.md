@@ -17,6 +17,7 @@ Statisk nettside (ingen egen server), bygget for **GitHub Pages**:
 - **Smalltalk / Sant eller usant / Vitser** – små leker (norsk)
 - **Kveldsmodus** – låses opp automatisk kl. 20:00 (oppdrag, frekk smalltalk, dansegulv-bingo)
 - **Ventehall** – innloggingen er åpen på forhånd, portalen åpner 15. august kl. 12:00
+- **Toastmaster** – vendekort med to bilder av Petter-Martin (det pene → det ekte 🤣)
 - **Minnebok** – gjestene skriver «snaps» som lagres i Google Sheet (se eget avsnitt)
 - **Språkvalg** 🇳🇴 🇬🇧 🇩🇪 🇪🇸 (flagg øverst; huskes på telefonen)
 - **Passord** – myk adgangssperre på hele siden + egen port på «Spør Bjørn Olav»
@@ -44,6 +45,8 @@ data/utmerkelser.json Tilfeldige utmerkelser ved trykk på navn
 data/hilsener.json    Personlige hilsener til utenlandske gjester
 data/kveld.json       Kveldsmodus-innhold (oppdrag, smalltalk, bingo)
 data/bjornolav.json   «Spør Bjørn Olav»-spørsmål + hvilket bordkort som blinker
+data/toastmaster.json Toastmaster-kortet (navn, bildetekster, «visste du at»-fakta)
+img/toastmaster*.jpg  Bilder til toastmaster-kortet (optimalisert for mobil)
 
 Bordplassering.csv    Gjesteliste (utgangspunkt for gjester.json)
 generate_data.py      Lager gjester.json fra CSV-en

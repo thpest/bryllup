@@ -6,7 +6,7 @@
 
 const app = document.getElementById("app");
 
-const DATA = { gjester: null, meny: null, program: null, smalltalk: null, vitser: null, santusant: null, utmerkelser: null, hilsener: null, kveld: null, bjornolav: null };
+const DATA = { gjester: null, meny: null, program: null, smalltalk: null, vitser: null, santusant: null, utmerkelser: null, hilsener: null, kveld: null, bjornolav: null, toastmaster: null };
 
 /* ---------- Språk (i18n) ---------- */
 let SPRAK = "no";
@@ -72,6 +72,7 @@ const I18N = {
     laasPlaceholder: "Passord",
     laasKnapp: "Åpne",
     laasFeil: "Feil passord – prøv igjen.",
+    btnToastT: "Toastmaster", btnToastU: "Bli kjent med kveldens seremonimester",
     btnMinnebokT: "Minnebok", btnMinnebokU: "Skriv en hilsen til brudeparet",
     minnebokIntro: "Skriv en liten hilsen eller et minne fra festen. Alt samles til en minnebok til brudeparet.",
     minnebokNavn: "Navnet ditt (valgfritt)",
@@ -140,6 +141,7 @@ const I18N = {
     laasPlaceholder: "Password",
     laasKnapp: "Open",
     laasFeil: "Wrong password – please try again.",
+    btnToastT: "Toastmaster", btnToastU: "Meet tonight's master of ceremonies",
     btnMinnebokT: "Guest book", btnMinnebokU: "Leave a message for the couple",
     minnebokIntro: "Write a short greeting or a memory from the party. It all becomes a keepsake book for the couple.",
     minnebokNavn: "Your name (optional)",
@@ -208,6 +210,7 @@ const I18N = {
     laasPlaceholder: "Passwort",
     laasKnapp: "Öffnen",
     laasFeil: "Falsches Passwort – bitte erneut versuchen.",
+    btnToastT: "Toastmaster", btnToastU: "Lerne den Zeremonienmeister kennen",
     btnMinnebokT: "Gästebuch", btnMinnebokU: "Hinterlasse dem Brautpaar eine Nachricht",
     minnebokIntro: "Schreib einen kleinen Gruß oder eine Erinnerung von der Feier. Alles wird zu einem Erinnerungsbuch für das Brautpaar.",
     minnebokNavn: "Dein Name (optional)",
@@ -276,6 +279,7 @@ const I18N = {
     laasPlaceholder: "Contraseña",
     laasKnapp: "Abrir",
     laasFeil: "Contraseña incorrecta – inténtalo de nuevo.",
+    btnToastT: "Maestro de ceremonias", btnToastU: "Conoce al maestro de ceremonias",
     btnMinnebokT: "Libro de recuerdos", btnMinnebokU: "Deja un mensaje a los novios",
     minnebokIntro: "Escribe un pequeño saludo o un recuerdo de la fiesta. Todo se reunirá en un libro de recuerdos para los novios.",
     minnebokNavn: "Tu nombre (opcional)",
@@ -556,7 +560,7 @@ async function hentJSON(sti) {
 /* ---------- Oppstart ---------- */
 async function start() {
   try {
-    const [gjester, meny, program, smalltalk, vitser, santusant, utmerkelser, hilsener, kveld, bjornolav] = await Promise.all([
+    const [gjester, meny, program, smalltalk, vitser, santusant, utmerkelser, hilsener, kveld, bjornolav, toastmaster] = await Promise.all([
       hentJSON("data/gjester.json"),
       hentJSON("data/meny.json").catch(() => null),
       hentJSON("data/program.json").catch(() => null),
@@ -567,6 +571,7 @@ async function start() {
       hentJSON("data/hilsener.json").catch(() => null),
       hentJSON("data/kveld.json").catch(() => null),
       hentJSON("data/bjornolav.json").catch(() => null),
+      hentJSON("data/toastmaster.json").catch(() => null),
     ]);
     DATA.gjester = gjester;
     DATA.meny = meny;
@@ -578,6 +583,7 @@ async function start() {
     DATA.hilsener = hilsener;
     DATA.kveld = kveld;
     DATA.bjornolav = bjornolav;
+    DATA.toastmaster = toastmaster;
     startKveldvakt();
     document.documentElement.lang = SPRAK;
     byggSprakbar();
@@ -617,6 +623,7 @@ function ruter() {
   else if (h === "kveld") visKveld();
   else if (h === "bjornolav") visBjornOlav();
   else if (h === "minnebok") visMinnebok();
+  else if (h === "toastmaster") visToastmaster();
   else visForside();
   app.classList.add("fade-inn");
   window.scrollTo(0, 0);
@@ -669,6 +676,9 @@ function visForside() {
   }
   if (DATA.vitser?.vitser?.length) {
     punkter.push({ hash: "vitser", ikon: "😂", tittel: t("btnVitserT"), under: t("btnVitserU") });
+  }
+  if (DATA.toastmaster?.bildeFront) {
+    punkter.push({ hash: "toastmaster", ikon: "🎤", tittel: t("btnToastT"), under: t("btnToastU") });
   }
   if (b.minnebokUrl) {
     punkter.push({ hash: "minnebok", ikon: "📖", tittel: t("btnMinnebokT"), under: t("btnMinnebokU") });
@@ -1496,6 +1506,87 @@ function tegnBingo(container) {
   });
   tegnCeller();
   oppdaterStatus();
+}
+
+/* ---------- Toastmaster (vendekort med avsløring) ---------- */
+const trekkToastFakta = lagTrekker(() => DATA.toastmaster?.fakta);
+
+function visToastmaster() {
+  app.innerHTML = "";
+  app.append(topplinje(t("btnToastT")));
+  const tm = DATA.toastmaster;
+  if (!tm?.bildeFront) {
+    app.append(el(`<div class="beskjed">${esc(t("komSnart"))}</div>`));
+    return;
+  }
+
+  // Forhåndslast baksidebildet, så avsløringen aldri blir tom
+  if (tm.bildeBak) { const pre = new Image(); pre.src = tm.bildeBak; }
+
+  app.append(el(`<div class="tm-topp">
+    <p class="tm-rolle">${esc(tm.tittel || "")}</p>
+    <h2 class="tm-navn">${esc(tm.navn || "")}</h2>
+    <p class="tm-under">${esc(tm.undertittel || "")}</p>
+  </div>`));
+
+  const kort = el(`<div class="tm-kort" id="tm-kort">
+    <div class="tm-flip">
+      <div class="tm-side tm-front">
+        <img src="${esc(tm.bildeFront)}" alt="${esc(tm.navn || "Toastmaster")}" loading="eager">
+        <p class="tm-bildetekst">${esc(tm.bildetekstFront || "")}</p>
+      </div>
+      <div class="tm-side tm-bak">
+        <img src="${esc(tm.bildeBak || tm.bildeFront)}" alt="${esc(tm.navn || "Toastmaster")}" loading="eager">
+        <p class="tm-bildetekst">${esc(tm.bildetekstBak || "")}</p>
+      </div>
+    </div>
+  </div>`);
+  app.append(kort);
+
+  const knapp = el(`<button class="neste-knapp tm-knapp" id="tm-vend">${esc(tm.avsloerKnapp || "Trykk her →")}</button>`);
+  app.append(knapp);
+
+  if (tm.intro) app.append(el(`<p class="tm-intro">${esc(tm.intro)}</p>`));
+
+  // Tilfeldig "fakta" – ny hver gang man vender kortet
+  let faktaEl = null;
+  if (tm.fakta?.length) {
+    faktaEl = el(`<div class="tm-fakta"><span class="tm-fakta-merke">Visste du at</span><p id="tm-fakta-tekst"></p></div>`);
+    app.append(faktaEl);
+    faktaEl.querySelector("#tm-fakta-tekst").textContent = trekkToastFakta();
+  }
+
+  let vendt = false;
+  knapp.addEventListener("click", () => {
+    vendt = !vendt;
+    kort.classList.toggle("vendt", vendt);
+    knapp.textContent = vendt
+      ? (tm.tilbakeKnapp || "← Tilbake")
+      : (tm.avsloerKnapp || "Trykk her →");
+    if (vendt) {
+      spillTruddelutt();
+      tmKonfetti(kort);
+    }
+    if (faktaEl) {
+      const ft = faktaEl.querySelector("#tm-fakta-tekst");
+      ft.textContent = trekkToastFakta();
+      ft.classList.remove("fade-inn"); void ft.offsetWidth; ft.classList.add("fade-inn");
+    }
+  });
+}
+
+function tmKonfetti(vert) {
+  const emojis = ["🎉", "🎊", "✨", "🎤", "😂", "⭐"];
+  for (let i = 0; i < 14; i++) {
+    const s = document.createElement("span");
+    s.className = "tm-konfetti";
+    s.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+    s.style.left = (5 + Math.random() * 90) + "%";
+    s.style.animationDelay = (Math.random() * 0.35).toFixed(2) + "s";
+    s.style.fontSize = (14 + Math.random() * 12).toFixed(0) + "px";
+    vert.appendChild(s);
+    setTimeout(() => s.remove(), 1900);
+  }
 }
 
 /* ---------- Minnebok (skriver til Google Sheet) ---------- */

@@ -1,0 +1,24 @@
+{
+  "navn": "Petter-Martin",
+  "tittel": "Kveldens toastmaster",
+  "undertittel": "Mannen med mikrofonen – og makten over ordet",
+  "bildeFront": "img/toastmaster1.jpg",
+  "bildeBak": "img/toastmaster2.jpg",
+  "bildetekstFront": "Det offisielle portrettet 🐴",
+  "bildetekstBak": "… og slik ser han ut når mikrofonen er av 🤣",
+  "avsloerKnapp": "Trykk for å se den EKTE toastmasteren →",
+  "tilbakeKnapp": "← Tilbake til det pene bildet",
+  "intro": "Kveldens seremonimester loser oss gjennom taler, innslag og overraskelser. Vær snill mot ham – han har mikrofonen!",
+  "fakta": [
+    "Har full kontroll – både på hest og på mikrofon.",
+    "Eneste i salen som får lov til å avbryte deg midt i en historie.",
+    "Kan si «og nå kommer neste taler» på 14 forskjellige måter.",
+    "Advarsel: gjør du noe morsomt i kveld, havner det i talen hans.",
+    "Har trolig allerede en historie om deg klar.",
+    "Applaus tas imot med takk. Buing behandles i sløyfa.",
+    "Kveldens mest fotograferte grimase.",
+    "Ansvarlig for at ingen taler varer lenger enn maten holder seg varm.",
+    "Trenger du oppmerksomhet? Han har mikrofonen. Vær hyggelig.",
+    "Ridende inn i solnedgangen – rett etter siste tale."
+  ]
+}

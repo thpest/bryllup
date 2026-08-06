@@ -824,6 +824,116 @@ body {
   letter-spacing: 0.04em;
 }
 
+/* ---------- Toastmaster ---------- */
+.tm-topp { text-align: center; margin: 4px 0 16px; }
+.tm-rolle {
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--blaa-dyp);
+  margin: 0 0 2px;
+}
+.tm-navn {
+  font-family: var(--serif);
+  font-size: 2.2rem;
+  font-weight: 600;
+  color: var(--navy);
+  margin: 0 0 4px;
+  line-height: 1.1;
+}
+.tm-under { color: var(--navy-myk); font-size: 0.95rem; margin: 0; }
+
+.tm-kort {
+  position: relative;
+  perspective: 1200px;
+  margin: 0 auto;
+  max-width: 340px;
+}
+.tm-flip {
+  position: relative;
+  width: 100%;
+  transform-style: preserve-3d;
+  transition: transform .7s cubic-bezier(.4, .2, .2, 1);
+}
+.tm-kort.vendt .tm-flip { transform: rotateY(180deg); }
+.tm-side {
+  background: var(--duk);
+  border: 1px solid var(--gull-myk);
+  border-radius: var(--radius);
+  box-shadow: var(--skygge);
+  padding: 12px 12px 10px;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.tm-side img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: var(--radius-liten);
+  background: #eaf3fb;
+}
+.tm-bak {
+  position: absolute;
+  inset: 0;
+  transform: rotateY(180deg);
+  border-color: var(--gull);
+}
+.tm-bildetekst {
+  text-align: center;
+  font-family: var(--serif);
+  font-size: 1.05rem;
+  color: var(--navy);
+  margin: 10px 4px 2px;
+  line-height: 1.3;
+}
+.tm-knapp { display: block; margin: 18px auto 0; }
+.tm-intro {
+  text-align: center;
+  color: var(--navy-myk);
+  font-size: 0.92rem;
+  max-width: 30em;
+  margin: 20px auto 0;
+}
+.tm-fakta {
+  background: linear-gradient(135deg, #ffffff, #f5faff);
+  border: 1px solid var(--gull-myk);
+  border-radius: var(--radius);
+  box-shadow: var(--skygge);
+  padding: 16px 18px;
+  margin-top: 18px;
+  text-align: center;
+}
+.tm-fakta-merke {
+  display: inline-block;
+  font-size: 0.66rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #7a5f27;
+  background: var(--gull-myk);
+  padding: 3px 10px;
+  border-radius: 999px;
+  margin-bottom: 8px;
+}
+.tm-fakta p {
+  font-family: var(--serif);
+  font-size: 1.2rem;
+  color: var(--navy);
+  margin: 0;
+  line-height: 1.3;
+}
+.tm-konfetti {
+  position: absolute;
+  top: 40%;
+  pointer-events: none;
+  z-index: 10;
+  animation: tmFall 1.7s ease-out forwards;
+}
+@keyframes tmFall {
+  0% { opacity: 0; transform: translateY(0) scale(.6) rotate(0deg); }
+  15% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-150px) scale(1.15) rotate(220deg); }
+}
+
 /* ---------- Ventehall (før portalen åpner) ---------- */
 .ventehall {
   background: var(--duk);
