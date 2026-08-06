@@ -882,10 +882,15 @@ body {
 .tm-flip {
   position: relative;
   width: 100%;
+  -webkit-transform-style: preserve-3d;
   transform-style: preserve-3d;
+  -webkit-transition: -webkit-transform .7s cubic-bezier(.4, .2, .2, 1);
   transition: transform .7s cubic-bezier(.4, .2, .2, 1);
 }
-.tm-kort.vendt .tm-flip { transform: rotateY(180deg); }
+.tm-kort.vendt .tm-flip {
+  -webkit-transform: rotateY(180deg);
+  transform: rotateY(180deg);
+}
 .tm-side {
   background: var(--duk);
   border: 1px solid var(--gull-myk);
@@ -894,7 +899,13 @@ body {
   padding: 12px 12px 10px;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
+  /* Sikkerhetsnett: rett side vises også om nettleseren ikke støtter 3D */
+  transition: opacity .3s ease .2s;
 }
+.tm-front { opacity: 1; }
+.tm-kort.vendt .tm-front { opacity: 0; }
+.tm-bak { opacity: 0; }
+.tm-kort.vendt .tm-bak { opacity: 1; }
 .tm-side img {
   width: 100%;
   height: auto;
