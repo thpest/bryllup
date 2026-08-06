@@ -393,6 +393,36 @@ body {
   border-color: var(--gull);
 }
 
+/* Brudeparets bordkort – staselig gull ved hovedbordet */
+.plass.brudepar {
+  background: linear-gradient(135deg, #fffaf0, #f6e9cd);
+  border: 1.5px solid var(--gull);
+  color: var(--navy);
+  font-family: var(--serif);
+  font-size: 1.2rem;
+  font-weight: 600;
+  min-height: 54px;
+  animation: brudeparGlod 3.4s ease-in-out infinite;
+}
+.plass.brudepar::before {
+  content: "💍";
+  position: absolute;
+  top: -11px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 12px;
+  line-height: 1.4;
+  background: #fff;
+  border: 1px solid var(--gull-myk);
+  border-radius: 999px;
+  padding: 1px 7px;
+  box-shadow: var(--skygge);
+}
+@keyframes brudeparGlod {
+  0%, 100% { box-shadow: 0 3px 14px rgba(198, 168, 107, 0.28); }
+  50% { box-shadow: 0 3px 22px rgba(198, 168, 107, 0.55); }
+}
+
 /* Trykk-animasjon */
 @keyframes sprett {
   0% { transform: scale(1); }

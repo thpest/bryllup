@@ -23,6 +23,8 @@ UT_FIL = os.path.join(HER, "data", "gjester.json")
 # ---- Rediger disse for aa endre forsidetekst ------------------------------
 BRYLLUP = {
     "par": "Julie & Endre",          # <-- BEKREFT/ENDRE brudeparets navn
+    # Brudeparets fornavn – bordkortene deres framheves ved hovedbordet
+    "brudepar": ["Julie", "Endre"],
     "dato": {
         "no": "15. august 2026",
         "en": "15 August 2026",

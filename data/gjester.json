@@ -1,6 +1,7 @@
 {
   "bryllup": {
     "par": "Julie & Endre",
+    "brudepar": ["Julie", "Endre"],
     "dato": {
       "no": "15. august 2026",
       "en": "15 August 2026",

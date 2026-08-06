@@ -920,6 +920,9 @@ function plassEl(navn, bord, rad, i) {
   // Bordkort som skal lyse litt ekstra (Bjørn Olav, toastmasteren …)
   const blinkNavn = [DATA.bjornolav?.bordkort, DATA.toastmaster?.bordkort].filter(Boolean);
   if (blinkNavn.includes(navn)) p.classList.add("blink");
+  // Brudeparet framheves – men kun ved hovedbordet (det finnes flere med samme fornavn)
+  const brudepar = DATA.gjester?.bryllup?.brudepar || [];
+  if (bord.hovedbord && brudepar.includes(navn)) p.classList.add("brudepar");
   return p;
 }
 function tomEl() {
