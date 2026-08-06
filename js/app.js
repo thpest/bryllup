@@ -61,6 +61,10 @@ const I18N = {
     laasIkkeListe: "Jeg står ikke på lista",
     laasVelgNavn: "Velg navnet ditt i lista.",
     velkommenNavn: "Velkommen, {navn}!",
+    ventTittel: "Du er påmeldt! 🎉",
+    ventUnder: "Portalen åpner på bryllupsdagen, 15. august kl. 12.00. Da finner du bordet ditt, menyen, programmet og mye mer her.",
+    ventNedtelling: "Åpner om {d}d {t}t {m}m {s}s",
+    ventKlar: "Portalen er åpen – trykk for å gå inn!",
     byttNavn: "Ikke deg? Bytt navn",
     byttNavnHilsen: "Velg riktig navn:",
     byttNavnLagre: "Lagre",
@@ -125,6 +129,10 @@ const I18N = {
     laasIkkeListe: "I'm not on the list",
     laasVelgNavn: "Please select your name.",
     velkommenNavn: "Welcome, {navn}!",
+    ventTittel: "You're all set! 🎉",
+    ventUnder: "The portal opens on the wedding day, 15 August at 12:00. That's when you'll find your table, the menu, the programme and much more here.",
+    ventNedtelling: "Opens in {d}d {t}h {m}m {s}s",
+    ventKlar: "The portal is open – tap to enter!",
     byttNavn: "Not you? Change name",
     byttNavnHilsen: "Choose the right name:",
     byttNavnLagre: "Save",
@@ -189,6 +197,10 @@ const I18N = {
     laasIkkeListe: "Ich stehe nicht auf der Liste",
     laasVelgNavn: "Bitte wähle deinen Namen.",
     velkommenNavn: "Willkommen, {navn}!",
+    ventTittel: "Du bist angemeldet! 🎉",
+    ventUnder: "Das Portal öffnet am Hochzeitstag, dem 15. August um 12:00 Uhr. Dann findest du hier deinen Tisch, das Menü, das Programm und vieles mehr.",
+    ventNedtelling: "Öffnet in {d}T {t}h {m}m {s}s",
+    ventKlar: "Das Portal ist offen – tippe, um einzutreten!",
     byttNavn: "Nicht du? Namen ändern",
     byttNavnHilsen: "Wähle den richtigen Namen:",
     byttNavnLagre: "Speichern",
@@ -253,6 +265,10 @@ const I18N = {
     laasIkkeListe: "No estoy en la lista",
     laasVelgNavn: "Por favor, elige tu nombre.",
     velkommenNavn: "¡Hola, {navn}!",
+    ventTittel: "¡Ya estás dentro! 🎉",
+    ventUnder: "El portal se abre el día de la boda, el 15 de agosto a las 12:00. Entonces encontrarás aquí tu mesa, el menú, el programa y mucho más.",
+    ventNedtelling: "Abre en {d}d {t}h {m}m {s}s",
+    ventKlar: "¡El portal está abierto – toca para entrar!",
     byttNavn: "¿No eres tú? Cambiar nombre",
     byttNavnHilsen: "Elige el nombre correcto:",
     byttNavnLagre: "Guardar",
@@ -320,7 +336,7 @@ function byggSprakbar() {
 
 /* ---------- Passord (myk adgangssperre) ---------- */
 // SHA-256-hash av passordene – klartekst ligger IKKE i koden.
-const PASS_SIDE = "f9add176f427a0e2e5a4b750a70a0c9ec2ab924cb8d2e51409f64ddcb879249c";
+const PASS_SIDE = "14bf86df359a157a5fc97a9e5ff285735e597498adb990a6898dc2e736dfe58c";
 const PASS_BO = "2067a7195567d457485b9cc0f75e0e944bdee4bdf3d3e9fef15dfe0bcd27bea1";
 
 async function hashSHA256(tekst) {
@@ -448,6 +464,73 @@ function visNavnVelger() {
   setTimeout(() => sel.focus(), 150);
 }
 
+/* ---------- Ventehall: portalen åpner på bryllupsdagen ---------- */
+// Forhåndsvisning: legg til ?apen=1 i adressen for å åpne uansett klokke
+function erPortalForhaandsvis() {
+  try { return new URLSearchParams(location.search).get("apen") === "1"; } catch (_) { return false; }
+}
+function portalMaaltid() {
+  const tid = DATA.gjester?.bryllup?.portalAapner;
+  const ms = tid ? new Date(tid).getTime() : NaN;
+  return isNaN(ms) ? null : ms;
+}
+function erPortalAapen() {
+  if (erPortalForhaandsvis()) return true;
+  const maal = portalMaaltid();
+  if (maal === null) return true; // ingen/ugyldig tid → alltid åpen
+  return Date.now() >= maal;
+}
+
+function visVentehall() {
+  app.innerHTML = "";
+  const b = DATA.gjester?.bryllup || {};
+  const meg = gjestNavn();
+  app.append(el(`
+    <header class="hero">
+      <div class="kimg">💍</div>
+      <h1 class="par">${esc(b.par || "")}</h1>
+      <p class="dato">${esc(tr(b.dato) || "")}</p>
+      <hr class="skille">
+    </header>
+  `));
+  const kort = el(`<div class="ventehall">
+    <p class="vent-tittel">${esc(t("ventTittel"))}</p>
+    ${meg ? `<p class="vent-navn">${t("velkommenNavn", { navn: esc(meg) })}</p>` : ""}
+    <p class="vent-under">${esc(t("ventUnder"))}</p>
+    <p class="nedtelling" id="vent-nedtelling"></p>
+    ${meg ? `<a class="bytt-navn-lenke" href="#" id="vent-bytt">${esc(t("byttNavn"))}</a>` : ""}
+  </div>`);
+  app.append(kort);
+
+  const byttLenke = kort.querySelector("#vent-bytt");
+  if (byttLenke) byttLenke.addEventListener("click", (e) => { e.preventDefault(); visNavnVelger(); });
+
+  const ned = kort.querySelector("#vent-nedtelling");
+  const maal = portalMaaltid();
+  const oppdater = () => {
+    if (maal === null) return;
+    const diff = maal - Date.now();
+    if (diff <= 0) {
+      ned.innerHTML = `<button class="neste-knapp" id="vent-inn">${esc(t("ventKlar"))}</button>`;
+      const knapp = ned.querySelector("#vent-inn");
+      if (knapp) knapp.addEventListener("click", () => ruter());
+      return;
+    }
+    const d = Math.floor(diff / 86400000);
+    const tim = Math.floor((diff % 86400000) / 3600000);
+    const m = Math.floor((diff % 3600000) / 60000);
+    const s = Math.floor((diff % 60000) / 1000);
+    ned.textContent = t("ventNedtelling", {
+      d: d, t: tim, m: String(m).padStart(2, "0"), s: String(s).padStart(2, "0"),
+    });
+  };
+  oppdater();
+  const iv = setInterval(() => {
+    if (!document.body.contains(kort)) { clearInterval(iv); return; }
+    oppdater();
+  }, 1000);
+}
+
 /* ---------- Hjelpere ---------- */
 function el(html) {
   const t = document.createElement("template");
@@ -517,6 +600,13 @@ function ruter() {
   const h = location.hash.replace(/^#\/?/, "");
   app.classList.remove("fade-inn");
   void app.offsetWidth; // restart animasjon
+  // Portalen er "påmeldt, men lukket" fram til åpningstidspunktet
+  if (!erPortalAapen()) {
+    visVentehall();
+    app.classList.add("fade-inn");
+    window.scrollTo(0, 0);
+    return;
+  }
   if (h === "plass") visBordkart();
   else if (h === "meny") visMeny();
   else if (h === "program") visProgram();

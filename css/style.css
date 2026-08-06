@@ -824,6 +824,41 @@ body {
   letter-spacing: 0.04em;
 }
 
+/* ---------- Ventehall (før portalen åpner) ---------- */
+.ventehall {
+  background: var(--duk);
+  border-radius: var(--radius);
+  box-shadow: var(--skygge);
+  padding: 32px 24px 28px;
+  text-align: center;
+}
+.ventehall .vent-tittel {
+  font-family: var(--serif);
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: var(--navy);
+  margin: 0 0 6px;
+}
+.ventehall .vent-navn {
+  font-family: var(--serif);
+  font-size: 1.2rem;
+  color: var(--blaa-dyp);
+  margin: 0 0 10px;
+}
+.ventehall .vent-under {
+  color: var(--navy-myk);
+  max-width: 26em;
+  margin: 0 auto;
+}
+.ventehall .nedtelling {
+  margin-top: 20px;
+  font-family: var(--serif);
+  font-size: 1.5rem;
+  color: var(--blaa-dyp);
+  font-variant-numeric: tabular-nums;
+}
+.ventehall .bytt-navn-lenke { margin-top: 18px; }
+
 /* ---------- Minnebok ---------- */
 .minnebok-kort {
   background: var(--duk);
