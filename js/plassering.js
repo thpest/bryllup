@@ -52,10 +52,34 @@ function renderMeta() {
   const felt = [
     ["par", "Brudepar"], ["dato", "Dato"], ["hilsen", "Hilsen på forsiden"],
   ];
+  const FLAGG = { no: "🇳🇴", en: "🇬🇧", de: "🇩🇪", es: "🇪🇸" };
+
   for (const [nokkel, etikett] of felt) {
+    const verdi = b[nokkel];
+
+    // Flerspråklig felt ({no,en,de,es}) → ett lite felt per språk
+    if (verdi && typeof verdi === "object" && !Array.isArray(verdi)) {
+      const boks = document.createElement("div");
+      boks.className = "meta-flersprak";
+      boks.innerHTML = `<span class="meta-etikett">${esc(etikett)}</span>`;
+      for (const sprak of Object.keys(verdi)) {
+        const rad = document.createElement("label");
+        rad.className = "meta-sprakrad";
+        rad.innerHTML = `<span class="meta-flagg" title="${esc(sprak)}">${FLAGG[sprak] || sprak}</span>` +
+          `<input type="text" value="${esc(verdi[sprak] ?? "")}">`;
+        rad.querySelector("input").addEventListener("input", (e) => {
+          verdi[sprak] = e.target.value;
+        });
+        boks.append(rad);
+      }
+      metaEl.append(boks);
+      continue;
+    }
+
+    // Vanlig tekstfelt
     const l = document.createElement("label");
-    l.innerHTML = `${esc(etikett)}<input type="text" value="${esc(b[nokkel] || "")}">`;
-    l.querySelector("input").addEventListener("input", e => { b[nokkel] = e.target.value; });
+    l.innerHTML = `${esc(etikett)}<input type="text" value="${esc(verdi || "")}">`;
+    l.querySelector("input").addEventListener("input", (e) => { b[nokkel] = e.target.value; });
     metaEl.append(l);
   }
 }
