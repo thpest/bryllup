@@ -3,7 +3,7 @@
   "undertittel": "Hvor godt kjenner du brudeparet? Gjett først – trykk så «Vis svar».",
   "pastander": [
     {
-      "pastand": "Julie og Endre møttes aller første gang på en fjelltur.",
+      "pastand": "Julie og Endre møttes aller første gang på Crossfit.",
       "svar": true,
       "forklaring": "Eksempel – bytt ut med den ekte historien om hvordan de møttes."
     },
@@ -14,22 +14,27 @@
     },
     {
       "pastand": "Paret har til sammen besøkt mer enn ti land sammen.",
-      "svar": true,
+      "svar": false,
       "forklaring": "Eksempel – tilpass tallet til det som stemmer."
     },
     {
-      "pastand": "Julie og Endre eier en katt sammen.",
-      "svar": false,
+      "pastand": "Julie og Endre eier en hund sammen.",
+      "svar": true,
       "forklaring": "Eksempel – bytt ut med et ekte faktum om paret."
     },
     {
-      "pastand": "Deres aller første date var på kino.",
-      "svar": true,
+      "pastand": "Juile og Endre liker veldig godt å vaske opp sammen",
+      "svar": false,
       "forklaring": "Eksempel – bytt ut med den ekte første daten."
     },
     {
-      "pastand": "Det var Julie som tok initiativet til den første daten.",
+      "pastand": "Deres aller første date var på kino.",
       "svar": false,
+      "forklaring": "Eksempel – bytt ut med den ekte første daten."
+    },
+    {
+      "pastand": "Det var Endre som tok initiativet til den første daten.",
+      "svar": true,
       "forklaring": "Eksempel – tilpass til virkeligheten."
     }
   ]
