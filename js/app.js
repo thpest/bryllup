@@ -74,6 +74,17 @@ const I18N = {
     laasFeil: "Feil passord – prøv igjen.",
     btnToastT: "Toastmaster", btnToastU: "Bli kjent med kveldens seremonimester",
     btnMinnebokT: "Minnebok", btnMinnebokU: "Skriv en hilsen til brudeparet",
+    btnRaadT: "Ekteskapsråd", btnRaadU: "Del ditt beste råd med de nygifte",
+    raadIntro: "Hva er ditt beste råd for et langt og lykkelig samliv? Rådene samles til brudeparet – og noen av dem dukker opp på storskjermen.",
+    raadNavn: "Navnet ditt",
+    raadTekst: "Ditt beste råd …",
+    raadSend: "Send rådet", raadSender: "Sender …",
+    raadTakk: "Takk for rådet! 💍",
+    raadTakkUnder: "Har du flere gode råd?",
+    raadIgjen: "Skriv et til",
+    raadFeil: "Klarte ikke å sende – sjekk nettet og prøv igjen.",
+    raadTomFeil: "Skriv et lite råd først.",
+    raadNavnFeil: "Skriv navnet ditt (rådet vises med navn).",
     minnebokIntro: "Skriv en liten hilsen eller et minne fra festen. Alt samles til en minnebok til brudeparet.",
     minnebokNavn: "Navnet ditt (valgfritt)",
     minnebokTekst: "Din hilsen eller minne …",
@@ -143,6 +154,17 @@ const I18N = {
     laasFeil: "Wrong password – please try again.",
     btnToastT: "Toastmaster", btnToastU: "Meet tonight's master of ceremonies",
     btnMinnebokT: "Guest book", btnMinnebokU: "Leave a message for the couple",
+    btnRaadT: "Marriage advice", btnRaadU: "Share your best advice with the newlyweds",
+    raadIntro: "What's your best advice for a long and happy life together? The advice is collected for the couple – and some of it appears on the big screen.",
+    raadNavn: "Your name",
+    raadTekst: "Your best advice …",
+    raadSend: "Send advice", raadSender: "Sending …",
+    raadTakk: "Thank you for your advice! 💍",
+    raadTakkUnder: "Got more good advice?",
+    raadIgjen: "Write another",
+    raadFeil: "Couldn't send – check your connection and try again.",
+    raadTomFeil: "Please write some advice first.",
+    raadNavnFeil: "Please enter your name (advice is shown with a name).",
     minnebokIntro: "Write a short greeting or a memory from the party. It all becomes a keepsake book for the couple.",
     minnebokNavn: "Your name (optional)",
     minnebokTekst: "Your message or memory …",
@@ -212,6 +234,17 @@ const I18N = {
     laasFeil: "Falsches Passwort – bitte erneut versuchen.",
     btnToastT: "Toastmaster", btnToastU: "Lerne den Zeremonienmeister kennen",
     btnMinnebokT: "Gästebuch", btnMinnebokU: "Hinterlasse dem Brautpaar eine Nachricht",
+    btnRaadT: "Eheratschlag", btnRaadU: "Teile deinen besten Rat mit dem Brautpaar",
+    raadIntro: "Was ist dein bester Rat für ein langes und glückliches Leben zu zweit? Die Ratschläge werden für das Brautpaar gesammelt – einige erscheinen auf der großen Leinwand.",
+    raadNavn: "Dein Name",
+    raadTekst: "Dein bester Rat …",
+    raadSend: "Rat senden", raadSender: "Senden …",
+    raadTakk: "Danke für deinen Rat! 💍",
+    raadTakkUnder: "Hast du noch mehr gute Ratschläge?",
+    raadIgjen: "Noch einen schreiben",
+    raadFeil: "Konnte nicht gesendet werden – prüfe deine Verbindung und versuche es erneut.",
+    raadTomFeil: "Bitte schreibe zuerst einen Rat.",
+    raadNavnFeil: "Bitte gib deinen Namen an (der Rat wird mit Namen gezeigt).",
     minnebokIntro: "Schreib einen kleinen Gruß oder eine Erinnerung von der Feier. Alles wird zu einem Erinnerungsbuch für das Brautpaar.",
     minnebokNavn: "Dein Name (optional)",
     minnebokTekst: "Deine Nachricht oder Erinnerung …",
@@ -281,6 +314,17 @@ const I18N = {
     laasFeil: "Contraseña incorrecta – inténtalo de nuevo.",
     btnToastT: "Maestro de ceremonias", btnToastU: "Conoce al maestro de ceremonias",
     btnMinnebokT: "Libro de recuerdos", btnMinnebokU: "Deja un mensaje a los novios",
+    btnRaadT: "Consejos", btnRaadU: "Comparte tu mejor consejo con los recién casados",
+    raadIntro: "¿Cuál es tu mejor consejo para una vida larga y feliz en pareja? Los consejos se recogen para los novios – y algunos aparecen en la pantalla grande.",
+    raadNavn: "Tu nombre",
+    raadTekst: "Tu mejor consejo …",
+    raadSend: "Enviar consejo", raadSender: "Enviando …",
+    raadTakk: "¡Gracias por tu consejo! 💍",
+    raadTakkUnder: "¿Tienes más buenos consejos?",
+    raadIgjen: "Escribir otro",
+    raadFeil: "No se pudo enviar – comprueba tu conexión e inténtalo de nuevo.",
+    raadTomFeil: "Escribe un consejo primero.",
+    raadNavnFeil: "Escribe tu nombre (el consejo se muestra con nombre).",
     minnebokIntro: "Escribe un pequeño saludo o un recuerdo de la fiesta. Todo se reunirá en un libro de recuerdos para los novios.",
     minnebokNavn: "Tu nombre (opcional)",
     minnebokTekst: "Tu mensaje o recuerdo …",
@@ -638,6 +682,7 @@ function ruter() {
   else if (h === "kveld") visKveld();
   else if (h === "bjornolav") visBjornOlav();
   else if (h === "minnebok") visMinnebok();
+  else if (h === "raad") visRaad();
   else if (h === "toastmaster") visToastmaster();
   else visForside();
   app.classList.add("fade-inn");
@@ -697,6 +742,7 @@ function visForside() {
   }
   if (b.minnebokUrl) {
     punkter.push({ hash: "minnebok", ikon: "📖", tittel: t("btnMinnebokT"), under: t("btnMinnebokU") });
+    punkter.push({ hash: "raad", ikon: "💍", tittel: t("btnRaadT"), under: t("btnRaadU") });
   }
   for (const p of punkter) {
     const a = el(`<a class="stor-knapp" href="#/${p.hash}">
@@ -1686,6 +1732,99 @@ function visMinnebok() {
     }
   });
   setTimeout(() => tekstEl.focus(), 200);
+}
+
+/* ---------- Ekteskapsråd (skriver til «Ekteskapsråd»-arket) ---------- */
+async function sendRaad(url, navn, tekst) {
+  const body = new URLSearchParams({
+    action: "advice",
+    name: navn,
+    advice: tekst,
+    submittedAt: new Date().toISOString(),
+  });
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 9000);
+  try {
+    await fetch(url, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
+      body,
+      signal: ctrl.signal,
+    });
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+function visRaad() {
+  app.innerHTML = "";
+  app.append(topplinje(t("btnRaadT")));
+  const url = DATA.gjester?.bryllup?.minnebokUrl; // samme Apps Script-endepunkt
+  if (!url) {
+    app.append(el(`<div class="beskjed">${esc(t("komSnart"))}</div>`));
+    return;
+  }
+  app.append(el(`<div class="seksjon-topp"><p class="under">${esc(t("raadIntro"))}</p></div>`));
+
+  const kort = el(`<div class="minnebok-kort">
+    <form class="minnebok-form" autocomplete="off">
+      <input type="text" class="mb-navn" maxlength="60"
+             placeholder="${esc(t("raadNavn"))}" aria-label="${esc(t("raadNavn"))}">
+      <textarea class="mb-tekst" rows="4" maxlength="500"
+                placeholder="${esc(t("raadTekst"))}" aria-label="${esc(t("raadTekst"))}"></textarea>
+      <p class="mb-feil" hidden></p>
+      <button type="submit" class="mb-send">${esc(t("raadSend"))}</button>
+    </form>
+  </div>`);
+  app.append(kort);
+
+  const form = kort.querySelector(".minnebok-form");
+  const navnEl = kort.querySelector(".mb-navn");
+  const tekstEl = kort.querySelector(".mb-tekst");
+  const feilEl = kort.querySelector(".mb-feil");
+  const sendKnapp = kort.querySelector(".mb-send");
+
+  navnEl.value = gjestNavn();
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const navn = navnEl.value.trim();
+    const tekst = tekstEl.value.trim();
+    feilEl.hidden = true;
+    // Samme krav som backend: navn >= 2 tegn, råd >= 3 tegn
+    if (navn.length < 2) {
+      feilEl.textContent = t("raadNavnFeil");
+      feilEl.hidden = false;
+      navnEl.focus();
+      return;
+    }
+    if (tekst.length < 3) {
+      feilEl.textContent = t("raadTomFeil");
+      feilEl.hidden = false;
+      tekstEl.focus();
+      return;
+    }
+    sendKnapp.disabled = true;
+    sendKnapp.textContent = t("raadSender");
+    try {
+      await sendRaad(url, navn, tekst);
+      kort.innerHTML = `<div class="mb-takk">
+        <div class="mb-takk-ikon">💍</div>
+        <p class="mb-takk-tittel">${esc(t("raadTakk"))}</p>
+        <p class="mb-takk-under">${esc(t("raadTakkUnder"))}</p>
+        <button class="neste-knapp lys" id="raad-igjen">${esc(t("raadIgjen"))}</button>
+      </div>`;
+      kort.querySelector("#raad-igjen").addEventListener("click", () => visRaad());
+      kort.classList.add("fade-inn");
+    } catch (_) {
+      feilEl.textContent = t("raadFeil");
+      feilEl.hidden = false;
+      sendKnapp.disabled = false;
+      sendKnapp.textContent = t("raadSend");
+    }
+  });
+  setTimeout(() => (navnEl.value ? tekstEl : navnEl).focus(), 200);
 }
 
 function visMinnebokTakk(kort) {

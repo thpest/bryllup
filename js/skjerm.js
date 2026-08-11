@@ -12,6 +12,8 @@ const fremdriftEl = document.getElementById("fremdrift");
 const DATA = { gjester: null, program: null, meny: null };
 let SNAPS = [];
 let snapPeker = 0;
+let RAAD = [];
+let raadPeker = 0;
 
 /* ---------- Hjelpere ---------- */
 function el(html) {
@@ -36,7 +38,7 @@ async function hentJSON(sti) {
 
 /* JSONP – Google Apps Script svarer uten CORS-hoder */
 let jsonpTeller = 0;
-function hentJSONP(url, params = {}, timeoutMs = 8000) {
+function hentJSONP(url, params = {}, timeoutMs = 15000) {
   return new Promise((resolve, reject) => {
     const navn = `skjermCb_${Date.now()}_${++jsonpTeller}`;
     const u = new URL(url);
@@ -45,11 +47,22 @@ function hentJSONP(url, params = {}, timeoutMs = 8000) {
     u.searchParams.set("_", Date.now());
 
     const script = document.createElement("script");
+
     const rydd = () => { script.remove(); delete window[navn]; clearTimeout(timer); };
-    const timer = setTimeout(() => { rydd(); reject(new Error("tidsavbrudd")); }, timeoutMs);
+
+    // Ved tidsavbrudd/feil: la funksjonen stå igjen som en tom "fangst",
+    // slik at et sent svar fra Google ikke kaster ReferenceError.
+    const ryddMykt = () => {
+      script.remove();
+      clearTimeout(timer);
+      window[navn] = function () { delete window[navn]; };
+      setTimeout(() => { delete window[navn]; }, 60000);
+    };
+
+    const timer = setTimeout(() => { ryddMykt(); reject(new Error("tidsavbrudd")); }, timeoutMs);
 
     window[navn] = (data) => { rydd(); resolve(data); };
-    script.onerror = () => { rydd(); reject(new Error("lastefeil")); };
+    script.onerror = () => { ryddMykt(); reject(new Error("lastefeil")); };
     script.src = u.toString();
     document.head.appendChild(script);
   });
@@ -67,6 +80,17 @@ async function hentSnaps() {
   } catch (_) {
     /* stille – skjermen ruller videre på det andre innholdet */
   }
+}
+
+async function hentRaad() {
+  const url = DATA.gjester?.bryllup?.minnebokUrl; // samme endepunkt
+  if (!url) return;
+  try {
+    const svar = await hentJSONP(url, { action: "raad_list" });
+    if (svar?.ok && Array.isArray(svar.items)) {
+      RAAD = svar.items.filter((x) => x && x.tekst);
+    }
+  } catch (_) { /* stille */ }
 }
 
 /* ---------- Slides ---------- */
@@ -107,6 +131,41 @@ function slideSnap() {
       <div class="snap-navn">${navn ? esc(navn) : "En gjest"}${snap.tid ? `<span class="tid">${esc(snap.tid)}</span>` : ""}</div>
     </div>
   </div>`);
+}
+
+function slideRaad() {
+  if (!RAAD.length) {
+    return el(`<div class="slide snap-tom">
+      <div class="st-tekst">
+        <div class="s-kicker">Ekteskapsråd</div>
+        <h2 class="s-tittel">Del ditt beste råd</h2>
+        <p class="s-under">Åpne portalen, velg «Ekteskapsråd» – så dukker rådet ditt opp her.</p>
+      </div>
+      <div class="qr-ramme"><img src="qr_bryllup.png" alt="QR-kode"></div>
+    </div>`);
+  }
+  const r = RAAD[raadPeker % RAAD.length];
+  raadPeker++;
+  const lengde = (r.tekst || "").length;
+  const storrelse = lengde > 220 ? "svaert-lang" : lengde > 90 ? "lang" : "";
+  return el(`<div class="slide">
+    <div class="snap-kort raad-kort">
+      <div class="s-kicker">Ekteskapsråd</div>
+      <div class="snap-hjerte">💍</div>
+      <p class="snap-tekst ${storrelse}">«${esc(r.tekst)}»</p>
+      <div class="snap-navn">${esc((r.navn || "").trim() || "En gjest")}</div>
+    </div>
+  </div>`);
+}
+
+// Veksler mellom snap og råd, slik at begge deler får plass
+let hilsenVeksel = 0;
+function slideHilsen() {
+  const harSnaps = SNAPS.length > 0;
+  const harRaad = RAAD.length > 0;
+  if (harSnaps && harRaad) return (hilsenVeksel++ % 2 === 0) ? slideSnap() : slideRaad();
+  if (harRaad) return slideRaad();
+  return slideSnap(); // dekker også "ingen ennå" med invitasjons-slide
 }
 
 function slideBord(bord) {
@@ -196,15 +255,15 @@ function byggProgramliste() {
   });
 
   const liste = [];
-  const snap = { lag: slideSnap, tid: 12000 };
+  const hilsen = { lag: slideHilsen, tid: 12000 };
   liste.push({ lag: slideVelkomst, tid: 14000 });
-  liste.push(snap);
+  liste.push(hilsen);
   for (const b of bord) {
     liste.push({ lag: () => slideBord(b), tid: 15000 });
-    liste.push(snap);
+    liste.push(hilsen);
   }
-  if (DATA.program?.poster?.length) { liste.push({ lag: slideProgram, tid: 17000 }); liste.push(snap); }
-  if (DATA.meny?.retter?.length) { liste.push({ lag: slideMeny, tid: 15000 }); liste.push(snap); }
+  if (DATA.program?.poster?.length) { liste.push({ lag: slideProgram, tid: 17000 }); liste.push(hilsen); }
+  if (DATA.meny?.retter?.length) { liste.push({ lag: slideMeny, tid: 15000 }); liste.push(hilsen); }
   return liste;
 }
 
@@ -305,15 +364,15 @@ async function start() {
     DATA.program = program;
     DATA.meny = meny;
 
-    await hentSnaps();
+    await Promise.all([hentSnaps(), hentRaad()]);
 
     slides = byggProgramliste();
     settOppKontroller();
     holdSkjermenVaaken();
     visSlide(0);
 
-    // Hent nye snaps jevnlig
-    setInterval(hentSnaps, 60000);
+    // Hent nye snaps og råd jevnlig
+    setInterval(() => { hentSnaps(); hentRaad(); }, 60000);
     // Bygg rulleringen på nytt av og til (fanger opp nye bord/endringer)
     setInterval(async () => {
       try {

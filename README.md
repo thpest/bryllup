@@ -19,6 +19,7 @@ Statisk nettside (ingen egen server), bygget for **GitHub Pages**:
 - **Ventehall** – innloggingen er åpen på forhånd, portalen åpner 15. august kl. 10:00
 - **Toastmaster** – vendekort med to bilder av Petter-Martin (det pene → det ekte 🤣)
 - **Minnebok** – gjestene skriver «snaps» som lagres i Google Sheet (se eget avsnitt)
+- **Ekteskapsråd** – gjestene deler råd til de nygifte (eget ark i samme regneark)
 - **Språkvalg** 🇳🇴 🇬🇧 🇩🇪 🇪🇸 (flagg øverst; huskes på telefonen)
 - **Passord** – myk adgangssperre på hele siden + egen port på «Spør Bjørn Olav»
 - Trykk på et navn i bordkartet → liten animasjon + tilfeldig «utmerkelse»

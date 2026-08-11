@@ -128,6 +128,14 @@ html, body {
 }
 .snap-navn .tid { color: var(--navy-myk); text-transform: none; letter-spacing: normal; margin-left: 1vw; }
 
+/* Ekteskapsråd – varmere, gyllen tone */
+.raad-kort {
+  background: linear-gradient(135deg, #fffdf7, #f7efdd);
+  border-color: var(--gull);
+}
+.raad-kort .s-kicker { margin-bottom: .6vh; }
+.raad-kort .snap-navn { color: #7a5f27; }
+
 .snap-tom { display: flex; flex-direction: row; align-items: center; gap: 5vw; }
 .snap-tom .st-tekst { text-align: left; max-width: 26ch; }
 
