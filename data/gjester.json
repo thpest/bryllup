@@ -1,7 +1,10 @@
 {
   "bryllup": {
     "par": "Julie & Endre",
-    "brudepar": ["Julie", "Endre"],
+    "brudepar": [
+      "Julie",
+      "Endre"
+    ],
     "dato": {
       "no": "15. august 2026",
       "en": "15 August 2026",
@@ -52,11 +55,11 @@
           "Niklas",
           "Benjamin",
           "Hedda",
-          "Jonathan",
           "Henriette",
-          "Sara",
+          "Jonathan",
           "Anders N.",
-          "Mattis"
+          "Mattis",
+          "Caroline"
         ],
         "B": [
           "Adrian",
@@ -68,9 +71,8 @@
           "Martine",
           "Christopher S.",
           "Hanne",
-          "Christopher L.",
-          "Emmeli",
-          "Caroline"
+          "Christoffer L.",
+          "Emmeli"
         ]
       }
     },
