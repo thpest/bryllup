@@ -30,6 +30,7 @@ Statisk nettside (ingen egen server), bygget for **GitHub Pages**:
 
 ```
 index.html            Gjesteportalen (det gjestene ser)
+skjerm.html           Storskjerm/kiosk – ruller automatisk (projektor i lokalet)
 plassering.html       Plasseringsverktøy (kun for deg – ikke for gjestene)
 css/style.css         All stil (lyseblått tema, hvite duker)
 js/app.js             All logikk: ruting, språk (i18n), passord, alle sidene
@@ -135,6 +136,27 @@ gjenbrukes: forhåndsutfylt i minneboken, automatisk søk i «Finn min plass», 
 liten hilsen på forsiden. Valgte man feil, kan man rette det når som helst via
 «Ikke deg? Bytt navn» ved hilsenen (uten passord). «Jeg står ikke på lista» finnes
 for gjester som ikke er i lista.
+
+---
+
+## Storskjerm / kiosk (`skjerm.html`)
+
+Egen side for projektor eller storskjerm i lokalet. Ingen passord, ingen mus –
+den ruller automatisk gjennom:
+
+velkomst + QR-kode → snaps fra minneboken → hvert bord → program (med «nå»-markering)
+→ meny, med snaps flettet inn mellom hver post.
+
+- **Adresse:** `https://thpest.github.io/bryllup/skjerm.html`
+- **Taster:** mellomrom = pause, ← → = bla, **F** = fullskjerm (eller F11)
+- Henter nye snaps hvert minutt; holder skjermen våken (Wake Lock).
+- Tåler at backend er nede – da vises en «skriv en hilsen»-slide med QR i stedet.
+- Velkomst-sliden viser passordet. Vil du skjule det, fjern linjen med
+  `Passord:` i `js/skjerm.js` (funksjonen `slideVelkomst`).
+
+**Krever én backend-utvidelse** for å lese snaps: `action=minnebok_list` i `doGet`
++ funksjonen `getMinnebokItems_` i Apps Script-koden (se avsnittet under), og
+re-distribusjon av **samme** distribusjon.
 
 ---
 
