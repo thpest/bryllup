@@ -43,20 +43,23 @@ html, body {
 
 .laster { font-family: var(--serif); font-size: 4vh; color: var(--navy-myk); }
 
-/* Inntoning ved bytte */
+/* Inntoning ved bytte.
+   Høyden settes av innholdet, og JS skalerer ned hvis det er for høyt/bredt.
+   Animasjonen bruker KUN opacity – transform er reservert til skaleringen
+   (og unngår samtidig «spøkelsesbilder» på projektor). */
 .slide {
   width: 100%;
-  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
-  animation: slideInn .7s ease both;
+  transform-origin: center center;
+  animation: slideInn .6s ease both;
 }
 @keyframes slideInn {
-  from { opacity: 0; transform: translateY(2vh) scale(.99); }
-  to   { opacity: 1; transform: none; }
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
 /* ---------- Felles overskrifter ---------- */
@@ -97,7 +100,14 @@ html, body {
   border: .3vh solid var(--gull-myk);
   flex: 0 0 auto;
 }
-.qr-ramme img { display: block; width: 42vh; height: 42vh; }
+.qr-ramme img {
+  display: block;
+  width: 42vh;
+  height: 42vh;
+  /* Egen kompositt-lag: hindrer at koden blir hengende igjen på skjermen */
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
 
 /* ---------- Snaps ---------- */
 .snap-kort {
@@ -152,7 +162,6 @@ html, body {
   grid-template-columns: 1fr auto 1fr;
   gap: 1.2vh 3vw;
   align-items: start;
-  max-height: 62vh;
   width: 86vw;
 }
 .bord-kol { display: flex; flex-direction: column; gap: 1.2vh; }
@@ -181,7 +190,19 @@ html, body {
 .bord-grid.tett .plassnavn.brudepar { font-size: 2.6vh; }
 
 /* ---------- Program ---------- */
-.prog-liste { display: flex; flex-direction: column; gap: 1.1vh; width: 74vw; max-height: 66vh; }
+.prog-liste { display: flex; flex-direction: column; gap: 1.1vh; width: 74vw; }
+/* Mange programposter → to spalter (leses nedover i venstre, så høyre) */
+.prog-liste.to-spalter {
+  display: block;
+  width: 88vw;
+  column-count: 2;
+  column-gap: 3vw;
+}
+.prog-liste.to-spalter .prog-rad {
+  break-inside: avoid;
+  -webkit-column-break-inside: avoid;
+  margin-bottom: 1.1vh;
+}
 .prog-rad {
   display: flex;
   align-items: center;

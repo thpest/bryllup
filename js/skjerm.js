@@ -221,10 +221,11 @@ function slideProgram() {
       <div class="p-tittel">${esc(tr(p.tittel))}</div>
     </div>`;
   }).join("");
+  const toSpalter = poster.length > 8 ? " to-spalter" : "";
   return el(`<div class="slide">
     <div class="s-kicker">Kveldens gang</div>
     <h2 class="s-tittel" style="font-size:5.5vh;margin-bottom:2.5vh">Program</h2>
-    <div class="prog-liste">${rader}</div>
+    <div class="prog-liste${toSpalter}">${rader}</div>
   </div>`);
 }
 
@@ -272,12 +273,35 @@ let peker = 0;
 let timer = null;
 let pauset = false;
 
+/* Skalerer slide-innholdet ned til det får plass på skjermen.
+   Gjør at store bord og lange programlister aldri blir kuttet. */
+function tilpassSlide(slideEl) {
+  if (!slideEl) return;
+  slideEl.style.transform = "none";
+  const cs = getComputedStyle(scene);
+  const ledigH = scene.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
+  const ledigB = scene.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+  const h = slideEl.scrollHeight;
+  const b = slideEl.scrollWidth;
+  if (!h || !b || !ledigH || !ledigB) return;
+  const k = Math.min(1, ledigH / h, ledigB / b);
+  if (k < 0.999) slideEl.style.transform = `scale(${k.toFixed(3)})`;
+}
+
+let gjeldendeSlideEl = null;
+
 function visSlide(indeks) {
   if (!slides.length) return;
   peker = (indeks + slides.length) % slides.length;
   const s = slides[peker];
-  scene.innerHTML = "";
-  scene.append(s.lag());
+  const nytt = s.lag();
+  scene.replaceChildren(nytt);   // atomisk bytte – ingen rester fra forrige
+  gjeldendeSlideEl = nytt;
+  tilpassSlide(nytt);
+  // Bilder kan endre høyden når de er ferdig lastet – mål på nytt da
+  nytt.querySelectorAll("img").forEach((img) => {
+    if (!img.complete) img.addEventListener("load", () => tilpassSlide(nytt), { once: true });
+  });
   startFremdrift(s.tid);
   clearTimeout(timer);
   if (!pauset) timer = setTimeout(() => visSlide(peker + 1), s.tid);
@@ -334,6 +358,15 @@ function settOppKontroller() {
   };
   document.addEventListener("mousemove", vis);
   document.addEventListener("touchstart", vis);
+
+  // Ny måling ved endret skjermstørrelse / fullskjerm
+  let maalTimer = null;
+  const maalPaaNytt = () => {
+    clearTimeout(maalTimer);
+    maalTimer = setTimeout(() => tilpassSlide(gjeldendeSlideEl), 150);
+  };
+  window.addEventListener("resize", maalPaaNytt);
+  document.addEventListener("fullscreenchange", maalPaaNytt);
 
   document.getElementById("k-neste").addEventListener("click", () => visSlide(peker + 1));
   document.getElementById("k-pause").addEventListener("click", () => settPause(!pauset));
